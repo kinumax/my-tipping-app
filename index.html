@@ -502,7 +502,7 @@
       box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
     }
     body.day-mode .pin-input-group input:focus {
-      box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
+      box_shadow: 0 0 8px rgba(33, 150, 243, 0.6);
     }
 
 
@@ -573,7 +573,7 @@
       box-shadow: 0 0 10px rgba(74, 144, 226, 0.4);
     }
     body.day-mode .memo-input:focus {
-      box-shadow: 0 0 10px rgba(33, 150, 243, 0.4);
+      box_shadow: 0 0 10px rgba(33, 150, 243, 0.4);
     }
 
     .memo-label {
@@ -773,28 +773,57 @@
       }, 1000);
     }
 
-    // ✅ ウォレット接続機能（Xaman対応）
+    // ウォレット接続機能（Xaman対応）
     async function connectWallet() {
-      if (!window.xrpl) {
-        alert("Xaman拡張機能がインストールされていません。またはPC版ブラウザでテストネットに接続しようとしています。XamanモバイルアプリからQRコード経由で接続するか、アドレスを手入力してください。");
-        return;
-      }
-      try {
-        const result = await window.xrpl.request({
-          command: "account_info",
-          account: null
-        });
-        const address = result.account_data?.Account;
-        if (address) {
-          document.getElementById("streamerAddressInput").value = address;
-          alert("ウォレットに接続しました！");
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+        const isAndroid = /android/i.test(userAgent);
+
+        if (isIOS || isAndroid) {
+            // モバイル端末の場合の処理
+            const xamanDeepLink = 'xaman://'; // Xamanアプリを開くディープリンク
+            const appStoreLink = 'https://apps.apple.com/jp/app/xaman-wallet/id1492302343';
+            const playStoreLink = 'https://play.google.com/store/apps/details?id=com.xrpllabs.xumm';
+
+            // Xamanアプリへのディープリンクを試みる
+            window.location.href = xamanDeepLink;
+
+            // アプリがインストールされていない場合のフォールバック（ストアへリダイレクト）
+            const timeout = setTimeout(() => {
+                if (isIOS) {
+                    window.location.href = appStoreLink;
+                } else if (isAndroid) {
+                    window.location.href = playStoreLink;
+                }
+            }, 1500); // 1.5秒待ってからリダイレクトを試みる
+
+            alert("Xamanアプリを起動しようとしています。もしアプリが起動しない場合は、数秒後にストアにリダイレクトされます。");
+
         } else {
-          alert("アカウント情報の取得に失敗しました。");
+            // PCの場合の処理
+            if (window.xrpl) {
+                try {
+                    // この部分は、XRPLに対応するブラウザ拡張機能が存在する場合のロジックです。
+                    // Xaman自体はPCブラウザ用の直接的な拡張機能としては一般的ではありません。
+                    const result = await window.xrpl.request({
+                        command: "account_info",
+                        account: null
+                    });
+                    const address = result.account_data?.Account;
+                    if (address) {
+                        document.getElementById("streamerAddressInput").value = address;
+                        alert("ウォレットに接続しました！");
+                    } else {
+                        alert("アカウント情報の取得に失敗しました。");
+                    }
+                } catch (error) {
+                    console.error("ウォレット接続エラー:", error);
+                    alert("ウォレット接続に失敗しました。Xaman以外のXRPLブラウザ拡張機能が正しく動作しているか確認してください。");
+                }
+            } else {
+                alert("Xamanは主にモバイルアプリです。PCブラウザで直接ウォレットに接続する拡張機能は見つかりませんでした。モバイルデバイスでこのページを開き、「Xamanアプリで開く」ボタンをご利用いただくか、アドレスを手入力してください。");
+            }
         }
-      } catch (error) {
-        console.error("ウォレット接続エラー:", error);
-        alert("ウォレット接続に失敗しました。Xaman拡張機能が正しく動作しているか確認してください。");
-      }
     }
 
     // --- PIN and Memo Functions ---
@@ -837,7 +866,7 @@
             document.getElementById('pinInput1').style.display = 'none';
             document.getElementById('pinInput2').style.display = 'none';
             document.getElementById('verifyPinButton').style.display = 'none';
-            document.querySelector('#memoSection p').style.display = 'none'; // Hide "Enter PIN" message
+            document.querySelector('#memoSection p').style.display = 'none'; // "Enter PIN" message
             localStorage.setItem('memoUnlocked', 'true'); // Save unlock status
         } else {
             pinStatus.textContent = 'PINコードが正しくありません。もう一度お試しください。';
