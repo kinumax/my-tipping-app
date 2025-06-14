@@ -1,269 +1,233 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎸 投げ銭デモアプリ</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f7f6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: #333;
-        }
-        .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-        }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 25px;
-            font-size: 2.2em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        h2 {
-            color: #34495e;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            font-size: 1.6em;
-        }
-        p {
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-        .address-display {
-            background-color: #e8f5e9;
-            border: 1px solid #c8e6c9;
-            padding: 12px 15px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .xrpl-address {
-            font-family: 'Courier New', monospace;
-            background-color: #dcedc8;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.95em;
-            color: #2e7d32;
-            word-break: break-all;
-        }
-        .copy-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .copy-button:hover {
-            background-color: #45a049;
-        }
-        .copy-status {
-            color: #4CAF50;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .input-group {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        .input-group input[type="number"] {
-            padding: 10px 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1.1em;
-            width: 120px;
-            text-align: right;
-        }
-        .input-group span {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #555;
-        }
-        .tip-button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .tip-button:hover:not(:disabled) {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
-        .tip-button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        .message {
-            margin-top: 20px;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-        .message.info {
-            background-color: #e0f7fa;
-            color: #007bff;
-        }
-        .message.success {
-            background-color: #e8f5e9;
-            color: #28a745;
-        }
-        .message.error {
-            background-color: #ffebee;
-            color: #dc3545;
-        }
-        .qr-code-area {
-            margin-top: 25px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            border: 1px dashed #ced4da;
-        }
-        .qr-image {
-            width: 180px;
-            height: 180px;
-            margin: 15px auto;
-            display: block;
-            border: 5px solid white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .xaman-link { /* このスタイルは今は使われません */
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .xaman-link:hover { /* このスタイルは今は使われません */
-            text-decoration: underline;
-        }
-        .loading {
-            margin-top: 20px;
-            color: #666;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎸 投げ銭受け取りデモアプリ</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 25px;
+      font-size: 2.2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .xrpl-address {
+      font-family: 'Courier New', monospace;
+      background-color: #dcedc8;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.95em;
+      color: #2e7d32;
+      word-break: break-word;
+      border: 1px solid #c8e6c9;
+      width: 100%;
+    }
+    .address-display {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .copy-button, .connect-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .copy-status {
+      color: #4CAF50;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .input-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    .input-group input[type="number"] {
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1.1em;
+      width: 120px;
+      text-align: right;
+    }
+    .tip-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+    .message {
+      margin-top: 20px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .message.info {
+      background-color: #e0f7fa;
+      color: #007bff;
+    }
+    .message.success {
+      background-color: #e8f5e9;
+      color: #28a745;
+    }
+    .qr-code-area {
+      margin-top: 25px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      border: 1px dashed #ced4da;
+    }
+    .qr-image {
+      width: 180px;
+      height: 180px;
+      margin: 15px auto;
+      display: block;
+      border: 5px solid white;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎸 投げ銭デモアプリ</h1>
+  <div class="container">
+    <h1>🎸 投げ銭受け取りデモアプリ</h1>
 
-        <div class="streamer-info">
-            <p>私のXRPLテストネットアドレスです。ここに投げ銭をお願いします！</p>
-            <div class="address-display">
-                <span id="streamerAddress" class="xrpl-address"></span>
-                <button onclick="copyAddress()" class="copy-button">コピー</button>
-            </div>
-            <p id="copyStatus" class="copy-status" style="display: none;">アドレスがコピーされました！</p>
-        </div>
+    <div class="streamer-info">
+      <p>あなたのXRPLテストネットアドレスを入力してください：</p>
+      <div class="address-display">
+        <input type="text" id="streamerAddressInput" class="xrpl-address" placeholder="例: r...abc123" />
+        <button onclick="connectWallet()" class="connect-button">ウォレットに接続</button>
+        <button onclick="copyAddress()" class="copy-button">アドレスをコピー</button>
+      </div>
+      <p id="copyStatus" class="copy-status" style="display: none;">コピーしました！</p>
+    </div>
 
-        <hr>
+    <hr>
 
-        <div class="viewer-section">
-            <h2>💰 XRPで投げ銭する</h2>
-            <p>投げ銭したい **テストXRP** の量を入力してください。<br>（このデモでは0.1XRP固定です）</p> <div class="input-group">
-                <input type="number" id="tipAmount" value="0.1" min="0.000001" step="0.000001" disabled> <span>XRP</span>
-            </div>
-            <button onclick="sendTip()" id="tipButton" class="tip-button">XRPを投げ銭する</button>
-            <p id="message" class="message"></p>
-            <div id="qrCodeArea" class="qr-code-area" style="display: none;">
-                <p>XamanアプリでQRコードをスキャンして署名してください。</p>
-                <img id="qrImage" class="qr-image" alt="Xaman QR Code">
-                </div>
-        </div>
+    <div class="viewer-section">
+      <h2>💰 XRPで投げ銭をもらう</h2>
+      <p>（このデモでは0.1XRP固定です）</p>
+      <div class="input-group">
+        <input type="number" id="tipAmount" value="0.1" disabled> <span>XRP</span>
+      </div>
+      <button onclick="sendTip()" id="tipButton" class="tip-button">XRPを投げ銭してもらう</button>
+      <p id="message" class="message"></p>
+      <div id="qrCodeArea" class="qr-code-area" style="display: none;">
+        <p>XamanアプリでQRコードをスキャンしてください。</p>
+        <img id="qrImage" class="qr-image" alt="QR Code">
+      </div>
+    </div>
+  </div>
 
-        </div>
-    
-    <script>
-        // --- 配信者のXRPLテストネットアドレス ---
-        const STREAMER_XRPL_ADDRESS = 'r4Qo5WWskpMpxhHosZKXoSJucyVLug2U97';
-        
-        // --- 固定QRコードのURL ---
-        const FIXED_QR_CODE_URL = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent('https://xrp.to/r4Qo5WWskpMpxhHosZKXoSJucyVLug2U97?amount=0.1');
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('streamerAddressInput').value = '';
+    });
 
-        // DOM読み込み完了後に初期化
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
+    async function copyAddress() {
+      try {
+        const address = document.getElementById('streamerAddressInput').value;
+        if (!address) {
+          alert('アドレスが入力されていません。');
+          return;
+        }
+        await navigator.clipboard.writeText(address);
+        const copyStatus = document.getElementById('copyStatus');
+        copyStatus.style.display = 'block';
+        setTimeout(() => {
+          copyStatus.style.display = 'none';
+        }, 2000);
+      } catch (err) {
+        console.error('コピー失敗:', err);
+        alert('コピーに失敗しました。');
+      }
+    }
+
+    function isValidXrplAddress(address) {
+      return /^r[1-9A-HJ-NP-Za-km-z]{25,34}$/.test(address);
+    }
+
+    async function sendTip() {
+      const tipButton = document.getElementById('tipButton');
+      const messageElement = document.getElementById('message');
+      const qrCodeArea = document.getElementById('qrCodeArea');
+      const qrImage = document.getElementById('qrImage');
+      const address = document.getElementById('streamerAddressInput').value.trim();
+
+      if (!isValidXrplAddress(address)) {
+        alert('正しいXRPLアドレスを入力してください。');
+        return;
+      }
+
+      const xrpUri = `https://xrp.to/?to=${encodeURIComponent(address)}&amount=0.1`;
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(xrpUri)}`;
+
+      tipButton.disabled = true;
+      messageElement.textContent = 'QRコードを生成中です...';
+      messageElement.className = 'message info';
+      qrCodeArea.style.display = 'block';
+      qrImage.src = qrUrl;
+
+      setTimeout(() => {
+        messageElement.textContent = '投げ銭準備が完了しました！Xamanアプリでスキャンしてください。';
+        messageElement.className = 'message success';
+        tipButton.disabled = false;
+      }, 2000);
+    }
+
+    // ✅ ウォレット接続機能（Xaman対応）
+    async function connectWallet() {
+      if (!window.xrpl) {
+        alert("Xaman拡張機能がインストールされていません。");
+        return;
+      }
+      try {
+        const result = await window.xrpl.request({
+          command: "account_info",
+          account: null
         });
-
-        async function initializeApp() {
-            // const loadingStatus = document.getElementById('loadingStatus'); // SDK読み込みは不要になったためコメントアウト
-            const streamerAddressElement = document.getElementById('streamerAddress');
-            
-            // SDK初期化処理を削除
-            // XamanSdkがロードされるのを待つ処理も不要
-            // xumm = new XummSdk(...) も不要
-
-            // 初期表示
-            streamerAddressElement.textContent = STREAMER_XRPL_ADDRESS;
-            // loadingStatus.style.display = 'none'; // SDK読み込みは不要になったためコメントアウト
-            
-            console.log('アプリ初期化完了');
+        const address = result.account_data?.Account;
+        if (address) {
+          document.getElementById("streamerAddressInput").value = address;
+        } else {
+          alert("アカウント情報の取得に失敗しました。");
         }
-
-        // --- アドレスコピー機能 ---
-        async function copyAddress() {
-            try {
-                await navigator.clipboard.writeText(STREAMER_XRPL_ADDRESS);
-                const copyStatus = document.getElementById('copyStatus');
-                copyStatus.style.display = 'block';
-                setTimeout(() => { copyStatus.style.display = 'none'; }, 2000);
-            } catch (err) {
-                console.error('アドレスコピー失敗:', err);
-                alert('アドレスのコピーに失敗しました。手動でコピーしてください。');
-            }
-        }
-
-        // --- 投げ銭機能 ---
-        async function sendTip() {
-            const tipButton = document.getElementById('tipButton');
-            const messageElement = document.getElementById('message');
-            const qrCodeArea = document.getElementById('qrCodeArea');
-            const qrImage = document.getElementById('qrImage');
-            // const xamanLink = document.getElementById('xamanLink'); // 直接リンクは使わないのでコメントアウト
-
-            tipButton.disabled = true;
-            messageElement.textContent = 'XamanアプリでQRコードをスキャンしてください...';
-            messageElement.className = 'message info';
-            qrCodeArea.style.display = 'block';
-
-            // QRコード画像を直接設定
-            qrImage.src = FIXED_QR_CODE_URL;
-            // xamanLink.href = '#'; // 直接リンクは使わないのでコメントアウト、または適当な値に
-
-            // ピッチ用に、QRコード表示後、数秒で完了メッセージを出すダミー処理
-            setTimeout(() => {
-                messageElement.textContent = `投げ銭準備が完了しました。Xamanアプリでスキャンしてください！`;
-                messageElement.className = 'message success';
-                // この時点ではまだ実際に送金が完了したわけではないので注意
-                // 実際の送金完了はXamanアプリ側で行われます
-                tipButton.disabled = false;
-                // qrCodeArea.style.display = 'none'; // デモ中はQRコードを残しておく方が良いかもしれません
-            }, 3000); // 3秒後にメッセージを更新
-        }
-    </script>
+      } catch (error) {
+        console.error("ウォレット接続エラー:", error);
+        alert("ウォレット接続に失敗しました。");
+      }
+    }
+  </script>
 </body>
 </html>
