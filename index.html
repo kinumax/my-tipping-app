@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🌌 XRP 投げ銭アプリ</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <title>🌌/☀️ XRP 投げ銭アプリ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
+    /* CSS Variables for theming */
     :root {
+      /* Night Mode Defaults */
       --bg-color: #1a1a2e; /* Dark Blue */
       --container-bg: #16213e; /* Slightly lighter dark blue */
       --text-color: #e0e0e0; /* Light Gray */
@@ -19,6 +21,54 @@
       --border-color: #0c183d; /* Very dark border */
       --input-bg: #283a5e; /* Darker blue for input */
       --qr-border: #8d9bb5; /* Light muted blue */
+      --hr-color: #0c183d;
+      --note-bg: #3c4c70;
+      --note-border: #5a6b90;
+      --note-text: #ffffff;
+      --pin-input-bg: #22304f;
+      --pin-input-border: #405a80;
+
+      /* Day Mode Overrides (initially hidden) */
+      --day-bg-color: #f0f2f5;
+      --day-container-bg: #ffffff;
+      --day-text-color: #333333;
+      --day-accent-color-1: #e0f7fa;
+      --day-accent-color-2: #ff7043; /* Orange for highlights/errors */
+      --day-primary-button-bg: #2196f3; /* Brighter Blue */
+      --day-primary-button-hover: #1976d2;
+      --day-success-color: #4caf50;
+      --day-info-color: #03a9f4;
+      --day-border-color: #e0e0e0;
+      --day-input-bg: #f9f9f9;
+      --day-qr-border: #9e9e9e;
+      --day-hr-color: #e0e0e0;
+      --day-note-bg: #ffffff;
+      --day-note-border: #d0d0d0;
+      --day-note-text: #333333;
+      --day-pin-input-bg: #f5f5f5;
+      --day-pin-input-border: #cccccc;
+    }
+
+    /* Day Mode styles */
+    body.day-mode {
+      --bg-color: var(--day-bg-color);
+      --container-bg: var(--day-container-bg);
+      --text-color: var(--day-text-color);
+      --accent-color-1: var(--day-accent-color-1);
+      --accent-color-2: var(--day-accent-color-2);
+      --primary-button-bg: var(--day-primary-button-bg);
+      --primary-button-hover: var(--day-primary-button-hover);
+      --success-color: var(--day-success-color);
+      --info-color: var(--day-info-color);
+      --border-color: var(--day-border-color);
+      --input-bg: var(--day-input-bg);
+      --qr-border: var(--day-qr-border);
+      --hr-color: var(--day-hr-color);
+      --note-bg: var(--day-note-bg);
+      --note-border: var(--day-note-border);
+      --note-text: var(--day-note-text);
+      --pin-input-bg: var(--day-pin-input-bg);
+      --pin-input-border: var(--day-pin-input-border);
     }
 
     body {
@@ -33,10 +83,11 @@
       color: var(--text-color);
       overflow: hidden; /* Prevent scrollbar from background animation */
       position: relative;
+      transition: background-color 0.5s ease;
     }
 
-    /* Background animation for a dynamic feel */
-    body::before {
+    /* Background animation for a dynamic feel (Night mode only) */
+    body:not(.day-mode)::before {
       content: '';
       position: absolute;
       top: 0;
@@ -67,6 +118,7 @@
       position: relative;
       overflow: hidden;
       animation: fadeIn 1s ease-out;
+      transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
     }
 
     @keyframes fadeIn {
@@ -83,6 +135,10 @@
       justify-content: center;
       gap: 15px;
       text-shadow: 0 0 10px rgba(74, 144, 226, 0.5); /* Glowing effect */
+      transition: color 0.5s ease, text-shadow 0.5s ease;
+    }
+    body.day-mode h1 {
+      text-shadow: none; /* No glow in day mode */
     }
 
     h2 {
@@ -91,11 +147,16 @@
       margin-bottom: 20px;
       font-size: 1.8em;
       text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+      transition: color 0.5s ease, text-shadow 0.5s ease;
+    }
+    body.day-mode h2 {
+      text-shadow: none;
     }
 
     p {
       color: var(--text-color);
       line-height: 1.6;
+      transition: color 0.5s ease;
     }
 
     .xrpl-address {
@@ -116,6 +177,9 @@
       outline: none;
       border-color: var(--primary-button-bg);
       box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
+    }
+    body.day-mode .xrpl-address:focus {
+      box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
     }
 
     .address-display {
@@ -150,6 +214,7 @@
       margin-top: 15px;
       font-size: 0.9em;
       animation: fadeOut 2s forwards; /* Animation for status message */
+      transition: color 0.5s ease;
     }
 
     @keyframes fadeOut {
@@ -184,12 +249,19 @@
       border-color: var(--primary-button-bg);
       box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
     }
+    body.day-mode .input-group input[type="number"]:focus {
+      box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
+    }
 
     .input-group span {
       font-size: 1.2em;
       font-weight: bold;
       color: var(--primary-button-bg);
       text-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+      transition: color 0.5s ease, text-shadow 0.5s ease;
+    }
+    body.day-mode .input-group span {
+      text-shadow: none;
     }
 
     .tip-button {
@@ -211,6 +283,10 @@
       transform: translateY(-3px) scale(1.02);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
     }
+    body.day-mode .tip-button:hover {
+      background-color: #f5511e; /* Darker orange */
+    }
+
 
     .tip-button:disabled {
       background-color: #666;
@@ -233,11 +309,17 @@
       color: var(--info-color);
       border: 1px solid var(--info-color);
     }
+    body.day-mode .message.info {
+      background-color: rgba(3, 169, 244, 0.1);
+    }
 
     .message.success {
       background-color: rgba(92, 184, 92, 0.2);
       color: var(--success-color);
       border: 1px solid var(--success-color);
+    }
+    body.day-mode .message.success {
+      background-color: rgba(76, 175, 80, 0.1);
     }
 
     .qr-code-area {
@@ -249,7 +331,7 @@
       display: none; /* Initially hidden */
       opacity: 0;
       transform: scale(0.9);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.5s ease, border-color 0.5s ease;
     }
 
     .qr-code-area.show {
@@ -265,12 +347,14 @@
       border: 8px solid white; /* Stronger white border for contrast */
       border-radius: 5px;
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      transition: border-color 0.5s ease, box-shadow 0.5s ease;
     }
 
     hr {
       border: none;
-      border-top: 1px dashed var(--border-color);
+      border-top: 1px dashed var(--hr-color);
       margin: 35px 0;
+      transition: border-color 0.5s ease;
     }
 
     /* Small glowing effect on elements on hover */
@@ -278,10 +362,222 @@
     .container input:not([type="number"]):hover {
       box-shadow: 0 0 15px rgba(74, 144, 226, 0.8);
     }
+    body.day-mode .container button:not(.tip-button):hover,
+    body.day-mode .container input:not([type="number"]):hover {
+      box-shadow: 0 0 15px rgba(33, 150, 243, 0.8);
+    }
+
+    /* Theme Toggle Switch */
+    .theme-switch-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end; /* Align to the right */
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    .theme-switch-wrapper span {
+      font-size: 0.9em;
+      color: var(--text-color);
+      transition: color 0.5s ease;
+    }
+    .theme-switch {
+      display: inline-block;
+      height: 28px;
+      position: relative;
+      width: 50px;
+    }
+    .theme-switch input {
+      display:none;
+    }
+    .slider {
+      background-color: var(--accent-color-1);
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: .4s;
+      border-radius: 34px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+    }
+    .slider:before {
+      background-color: #fff;
+      bottom: 4px;
+      content: "";
+      height: 20px;
+      left: 4px;
+      position: absolute;
+      transition: .4s;
+      width: 20px;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    input:checked + .slider {
+      background-color: var(--primary-button-bg);
+    }
+    input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+
+    /* PIN and Memo Section */
+    .memo-section {
+      margin-top: 30px;
+      padding: 25px;
+      background-color: var(--container-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      text-align: left;
+      display: none; /* Initially hidden */
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+    }
+    .memo-section.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .memo-section h3 {
+      color: var(--primary-button-bg);
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      text-align: center;
+      transition: color 0.5s ease;
+    }
+
+    .pin-input-group {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .pin-input-group input {
+      width: 100px;
+      padding: 10px 15px;
+      font-size: 1.1em;
+      border: 1px solid var(--pin-input-border);
+      border-radius: 8px;
+      background-color: var(--pin-input-bg);
+      color: var(--text-color);
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+      transition: all 0.3s ease;
+    }
+    .pin-input-group input:focus {
+      outline: none;
+      border-color: var(--primary-button-bg);
+      box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
+    }
+    body.day-mode .pin-input-group input:focus {
+      box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
+    }
+
+
+    .pin-button {
+      background-color: var(--primary-button-bg);
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+      width: 100%;
+    }
+    .pin-button:hover {
+      background-color: var(--primary-button-hover);
+      transform: translateY(-2px);
+    }
+    .pin-button:disabled {
+      background-color: #666;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .pin-status {
+      font-size: 0.9em;
+      margin-top: 10px;
+      text-align: center;
+      color: var(--accent-color-2);
+      transition: color 0.5s ease;
+    }
+
+    /* Memo input styling (iPhone Notes inspired) */
+    .memo-input-container {
+      margin-top: 25px;
+      position: relative;
+      display: none; /* Hidden until PIN is correct */
+      opacity: 0;
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .memo-input-container.show {
+      display: block;
+      opacity: 1;
+      transform: scaleY(1);
+    }
+
+    .memo-input {
+      width: calc(100% - 20px);
+      min-height: 120px;
+      padding: 15px;
+      border: 1px solid var(--note-border);
+      border-radius: 10px;
+      background-color: var(--note-bg);
+      color: var(--note-text);
+      font-family: 'Roboto', sans-serif; /* More standard font for notes */
+      font-size: 1em;
+      resize: vertical;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      line-height: 1.5;
+      transition: all 0.3s ease;
+    }
+    .memo-input:focus {
+      outline: none;
+      border-color: var(--primary-button-bg);
+      box-shadow: 0 0 10px rgba(74, 144, 226, 0.4);
+    }
+    body.day-mode .memo-input:focus {
+      box-shadow: 0 0 10px rgba(33, 150, 243, 0.4);
+    }
+
+    .memo-label {
+      color: var(--text-color);
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.9em;
+      margin-bottom: 8px;
+      display: block;
+      transition: color 0.5s ease;
+    }
+
+    /* Animations for emojis */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
-<body>
+<body class="night-mode">
   <div class="container">
+    <div class="theme-switch-wrapper">
+      <span>☀️ Day Mode</span>
+      <label class="theme-switch" for="checkbox">
+        <input type="checkbox" id="checkbox" onchange="toggleTheme()" checked />
+        <div class="slider round"></div>
+      </label>
+      <span>🌌 Night Mode</span>
+    </div>
+
     <h1><span style="font-size: 1.5em; animation: pulse 2s infinite;">💸</span> XRPを受け取る</h1>
 
     <div class="streamer-info">
@@ -309,12 +605,73 @@
         <img id="qrImage" class="qr-image" alt="QR Code">
       </div>
     </div>
+
+    <hr>
+
+    <div id="memoSection" class="memo-section">
+        <h3><span style="font-size: 1.2em;">📝</span> メモ機能</h3>
+        <p>メモを表示するにはPINコードを入力してください。</p>
+        <div class="pin-input-group">
+            <input type="password" id="pinInput1" placeholder="PINコード" maxlength="4" onkeyup="checkPinInput()">
+            <input type="password" id="pinInput2" placeholder="PINコード再入力" maxlength="4" onkeyup="checkPinInput()">
+        </div>
+        <p id="pinStatus" class="pin-status"></p>
+        <button onclick="verifyPin()" id="verifyPinButton" class="pin-button" disabled>PINを認証</button>
+
+        <div id="memoInputContainer" class="memo-input-container">
+            <label for="privateMemo" class="memo-label">ここにメモを入力してください：</label>
+            <textarea id="privateMemo" class="memo-input" placeholder="秘密のメモ..."></textarea>
+        </div>
+    </div>
+
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('streamerAddressInput').value = '';
+      // Set initial theme based on local storage or default to night mode
+      const savedTheme = localStorage.getItem('theme') || 'night-mode';
+      document.body.className = savedTheme;
+      document.getElementById('checkbox').checked = (savedTheme === 'night-mode');
+
+      // Check if PIN has been entered correctly before
+      const memoUnlocked = localStorage.getItem('memoUnlocked') === 'true';
+      if (memoUnlocked) {
+          document.getElementById('memoSection').classList.add('show');
+          document.getElementById('memoInputContainer').classList.add('show');
+          document.getElementById('pinInput1').style.display = 'none';
+          document.getElementById('pinInput2').style.display = 'none';
+          document.getElementById('verifyPinButton').style.display = 'none';
+          document.getElementById('pinStatus').textContent = 'PIN認証済みです。';
+          document.getElementById('pinStatus').style.color = 'var(--success-color)';
+          document.querySelector('#memoSection p').style.display = 'none'; // Hide "Enter PIN" message
+      } else {
+        document.getElementById('memoSection').classList.add('show'); // Always show PIN section
+      }
+      
+      // Load saved memo
+      const savedMemo = localStorage.getItem('privateMemoContent');
+      if (savedMemo) {
+          document.getElementById('privateMemo').value = savedMemo;
+      }
+      // Save memo on input change
+      document.getElementById('privateMemo').addEventListener('input', (event) => {
+          localStorage.setItem('privateMemoContent', event.target.value);
+      });
     });
+
+    function toggleTheme() {
+      const body = document.body;
+      if (body.classList.contains('day-mode')) {
+        body.classList.remove('day-mode');
+        body.classList.add('night-mode');
+        localStorage.setItem('theme', 'night-mode');
+      } else {
+        body.classList.remove('night-mode');
+        body.classList.add('day-mode');
+        localStorage.setItem('theme', 'day-mode');
+      }
+    }
 
     async function copyAddress() {
       try {
@@ -326,7 +683,6 @@
         await navigator.clipboard.writeText(address);
         const copyStatus = document.getElementById('copyStatus');
         copyStatus.style.display = 'block';
-        // Hide the status message after 2 seconds
         setTimeout(() => {
           copyStatus.style.display = 'none';
         }, 2000);
@@ -358,20 +714,19 @@
       tipButton.disabled = true;
       messageElement.textContent = '🌌 QRコードを生成中です...';
       messageElement.className = 'message info';
-      qrCodeArea.classList.remove('show'); // Hide QR code area before showing
+      qrCodeArea.classList.remove('show');
       
       qrImage.src = qrUrl;
       
-      // Add a small delay for the QR code to load then show with animation
       setTimeout(() => {
         qrCodeArea.style.display = 'block';
-        setTimeout(() => { // Trigger animation after display block
+        setTimeout(() => {
             qrCodeArea.classList.add('show');
         }, 50); 
         messageElement.textContent = '✅ 投げ銭準備が完了しました！Xamanアプリでスキャンしてください。';
         messageElement.className = 'message success';
         tipButton.disabled = false;
-      }, 1000); // Give some time for the "generating" message to display
+      }, 1000);
     }
 
     // ✅ ウォレット接続機能（Xaman対応）
@@ -396,6 +751,44 @@
         console.error("ウォレット接続エラー:", error);
         alert("ウォレット接続に失敗しました。Xaman拡張機能が正しく動作しているか確認してください。");
       }
+    }
+
+    // --- PIN and Memo Functions ---
+    const CORRECT_PIN = "1234"; // 例としてPINを設定。実際にはもっと安全な方法で管理してください。
+
+    function checkPinInput() {
+        const pin1 = document.getElementById('pinInput1').value;
+        const pin2 = document.getElementById('pinInput2').value;
+        const verifyButton = document.getElementById('verifyPinButton');
+
+        if (pin1.length === 4 && pin2.length === 4) {
+            verifyButton.disabled = false;
+        } else {
+            verifyButton.disabled = true;
+        }
+    }
+
+    function verifyPin() {
+        const pin1 = document.getElementById('pinInput1').value;
+        const pin2 = document.getElementById('pinInput2').value;
+        const pinStatus = document.getElementById('pinStatus');
+        const memoInputContainer = document.getElementById('memoInputContainer');
+
+        if (pin1 === CORRECT_PIN && pin2 === CORRECT_PIN) {
+            pinStatus.textContent = 'PINコードが認証されました！';
+            pinStatus.style.color = 'var(--success-color)';
+            memoInputContainer.classList.add('show');
+            document.getElementById('pinInput1').style.display = 'none';
+            document.getElementById('pinInput2').style.display = 'none';
+            document.getElementById('verifyPinButton').style.display = 'none';
+            document.querySelector('#memoSection p').style.display = 'none'; // Hide "Enter PIN" message
+            localStorage.setItem('memoUnlocked', 'true'); // Save unlock status
+        } else {
+            pinStatus.textContent = 'PINコードが一致しません。もう一度お試しください。';
+            pinStatus.style.color = 'var(--accent-color-2)';
+            memoInputContainer.classList.remove('show');
+            localStorage.setItem('memoUnlocked', 'false');
+        }
     }
   </script>
 </body>
