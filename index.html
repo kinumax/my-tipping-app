@@ -29,7 +29,9 @@
       --pin-input-border: #405a80;
       --note-line-color: #5c6e91; /* Memo line color */
       --copy-icon-color: #bbbbbb; /* Copy icon color */
-      --mirror-bg: #2b3a5d; /* Background for mirror QR section */
+      --watch-button-bg: #3f72af; /* Button for watch transfer */
+      --watch-button-hover: #346296; /* Hover for watch button */
+
 
       /* Day Mode Overrides (initially hidden) */
       --day-bg-color: #f0f2f5;
@@ -52,7 +54,8 @@
       --day-pin-input-border: #cccccc;
       --day-note-line-color: #e0e0e0; /* Day memo line color */
       --day-copy-icon-color: #666666; /* Copy icon color */
-      --day-mirror-bg: #e8e8e8; /* Background for mirror QR section */
+      --day-watch-button-bg: #03a9f4;
+      --day-watch-button-hover: #0288d1;
     }
 
     body.day-mode {
@@ -76,7 +79,8 @@
       --pin-input-border: var(--day-pin-input-border);
       --note-line-color: var(--day-note-line-color);
       --copy-icon-color: var(--day-copy-icon-color);
-      --mirror-bg: var(--day-mirror-bg);
+      --watch-button-bg: var(--day-watch-button-bg);
+      --watch-button-hover: var(--day-watch-button-hover);
     }
 
     body {
@@ -389,10 +393,6 @@
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* シャドウを調整 */
       transition: border-color 0.5s ease, box-shadow 0.5s ease;
     }
-
-    .qr-image.mirror {
-        transform: scaleX(-1); /* 鏡文字 */
-    }
     
     .qr-code-area p {
       font-size: 0.8em; /* 文字をさらに小さく */
@@ -412,8 +412,7 @@
         margin-top: 10px;
     }
 
-    .open-xaman-button, .mirror-qr-button {
-      background-color: var(--success-color);
+    .action-button { /* General style for action buttons in QR area */
       color: white;
       border: none;
       padding: 9px 18px; /* パディングをさらに減らす */
@@ -426,48 +425,72 @@
       flex-grow: 1; /* ボタンを横に広げる */
       min-width: 120px; /* 最小幅を設定 */
     }
-    .open-xaman-button:hover, .mirror-qr-button:hover {
+
+    .open-xaman-button {
+      background-color: var(--success-color);
+    }
+    .open-xaman-button:hover {
       background-color: #4CAF50;
       transform: translateY(-1px);
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
-    body.day-mode .open-xaman-button, body.day-mode .mirror-qr-button {
+    body.day-mode .open-xaman-button {
       background-color: var(--day-success-color);
     }
-    body.day-mode .open-xaman-button:hover, body.day-mode .mirror-qr-button:hover {
+    body.day-mode .open-xaman-button:hover {
       background-color: #388e3c;
     }
 
-    /* Mirror QR specific styles */
-    .mirror-qr-section {
-        background-color: var(--mirror-bg);
+    .send-to-watch-button {
+        background-color: var(--watch-button-bg); /* 新しいボタンの色 */
+    }
+    .send-to-watch-button:hover {
+        background-color: var(--watch-button-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    body.day-mode .send-to-watch-button {
+        background-color: var(--day-watch-button-bg);
+    }
+    body.day-mode .send-to-watch-button:hover {
+        background-color: var(--day-watch-button-hover);
+    }
+
+    .watch-transfer-section {
+        background-color: var(--accent-color-1); /* QRコードエリアと同じ背景色 */
         border-radius: 8px;
         padding: 15px;
-        margin-top: 20px;
+        margin-top: 15px;
         box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
         display: none; /* Initially hidden */
         opacity: 0;
         transform: translateY(10px);
         transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.5s ease;
+        border: 1px dashed var(--qr-border);
     }
-    .mirror-qr-section.show {
+    .watch-transfer-section.show {
         display: block;
         opacity: 1;
         transform: translateY(0);
     }
-    .mirror-qr-section p {
+    .watch-transfer-section p {
         margin-bottom: 10px;
         font-size: 0.85em;
+        text-align: left;
     }
-    .mirror-qr-image {
-        width: 120px; /* 鏡文字QRを小さく */
-        height: 120px;
-        margin: 0 auto 10px auto;
-        display: block;
-        border: 4px solid white;
-        border-radius: 4px;
-        box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-        transform: scaleX(-1); /* 鏡文字 */
+    .watch-transfer-section ul {
+        list-style: none; /* ドットを消す */
+        padding-left: 0;
+        margin-bottom: 10px;
+        font-size: 0.8em;
+        text-align: left;
+        line-height: 1.4;
+    }
+    .watch-transfer-section li {
+        margin-bottom: 5px;
+    }
+    .watch-transfer-section strong {
+        color: var(--primary-button-bg);
     }
 
 
@@ -630,13 +653,16 @@
         
         <p>**同じ携帯で送金する場合:**</p>
         <div class="qr-buttons-group">
-            <button id="openXamanButton" class="open-xaman-button">Xamanアプリで開く <span style="margin-left: 5px;">📱</span></button>
-            <button id="showMirrorQrButton" class="mirror-qr-button" onclick="toggleMirrorQr()">鏡文字QRを表示/非表示 🔄</button>
+            <button id="openXamanButton" class="action-button open-xaman-button">Xamanアプリで開く <span style="margin-left: 5px;">📱</span></button>
+            <button id="sendToWatchButton" class="action-button send-to-watch-button" onclick="sendQrToWatch()">Apple Watchに送る ⌚️</button>
         </div>
 
-        <div id="mirrorQrSection" class="mirror-qr-section">
-            <p>iPhoneを鏡に近づけてインカメラでスキャンしてください。</p>
-            <img id="mirrorQrImage" class="mirror-qr-image" alt="Mirror QR Code">
+        <div id="watchTransferSection" class="watch-transfer-section">
+            <p><strong>Apple WatchにQRコードを表示する方法:</strong></p>
+            <ul>
+                <li><strong>AirDrop (推奨):</strong> 「Apple Watchに送る」ボタンをタップ後、AirDropの共有メニューが表示されたら、お使いのApple Watchを選択してください。</li>
+                <li><strong>写真アプリ経由:</strong> AirDropがうまくいかない場合、QRコード画像は「写真」アプリに保存されます。Apple Watchで写真アプリを開き、保存されたQRコードを表示してスキャンしてください。</li>
+            </ul>
         </div>
       </div>
     </div>
@@ -664,6 +690,7 @@
 
   <script>
     let currentXrpUri = ''; // Global variable to store the generated XRP URI
+    let currentQrImageUrl = ''; // Global variable to store the generated QR code image URL
     const LOCAL_STORAGE_PIN_KEY = 'memoPinCode'; // PINを保存するキー
     const LOCAL_STORAGE_MEMO_UNLOCKED_KEY = 'memoUnlocked'; // メモがアンロックされた状態を保存するキー
     const LOCAL_STORAGE_MEMO_CONTENT_KEY = 'privateMemoContent'; // メモの内容を保存するキー
@@ -786,7 +813,7 @@
       const messageElement = document.getElementById('message');
       const qrCodeArea = document.getElementById('qrCodeArea');
       const qrImage = document.getElementById('qrImage');
-      const mirrorQrImage = document.getElementById('mirrorQrImage');
+      const watchTransferSection = document.getElementById('watchTransferSection');
       const address = document.getElementById('streamerAddressInput').value.trim();
 
       if (!isValidXrplAddress(address)) {
@@ -800,17 +827,16 @@
       }
 
       currentXrpUri = `https://xrp.to/?to=${encodeURIComponent(address)}&amount=0.1`; // Store the URI
-      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(currentXrpUri)}`;
+      currentQrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(currentXrpUri)}`; // QR画像のURLも保存
 
       tipButton.disabled = true;
       messageElement.textContent = '🌌 QRコードを生成中です...';
       messageElement.className = 'message info';
       qrCodeArea.classList.remove('show');
-      document.getElementById('mirrorQrSection').classList.remove('show'); // 鏡文字QRも隠す
+      watchTransferSection.classList.remove('show'); // Apple Watchセクションも隠す
       
-      qrImage.src = qrUrl;
-      mirrorQrImage.src = qrUrl; // 鏡文字用にも同じQRコードを生成
-
+      qrImage.src = currentQrImageUrl;
+      
       // QRコードのロードが完了してから表示する
       qrImage.onload = () => {
         qrCodeArea.style.display = 'block';
@@ -852,8 +878,14 @@
             }, 1000); // 1秒後にリダイレクトを試みる (短縮)
 
             // アプリが正常に開いた場合、タイマーをクリア
-            window.addEventListener('blur', () => clearTimeout(timeout), { once: true });
-            window.addEventListener('pagehide', () => clearTimeout(timeout), { once: true });
+            // visibilitychangeイベントをトリガーするアプリ起動は、より確実な方法
+            const handleVisibilityChangeForApp = () => {
+                if (!document.hidden) { // ページが非表示から戻った場合
+                    clearTimeout(timeout);
+                    document.removeEventListener('visibilitychange', handleVisibilityChangeForApp);
+                }
+            };
+            document.addEventListener('visibilitychange', handleVisibilityChangeForApp);
 
         } else {
             // PCの場合、xrp.toのウェブページを開く
@@ -885,8 +917,13 @@
                 }
             }, 1500);
 
-            window.addEventListener('blur', () => clearTimeout(timeout), { once: true });
-            window.addEventListener('pagehide', () => clearTimeout(timeout), { once: true });
+            const handleVisibilityChangeForApp = () => {
+                if (!document.hidden) {
+                    clearTimeout(timeout);
+                    document.removeEventListener('visibilitychange', handleVisibilityChangeForApp);
+                }
+            };
+            document.addEventListener('visibilitychange', handleVisibilityChangeForApp);
 
             alert("Xamanアプリを起動しようとしています。もしアプリが起動しない場合は、数秒後にストアにリダイレクトされます。");
 
@@ -914,17 +951,39 @@
         }
     }
 
-    // 鏡文字QRコードの表示/非表示を切り替える関数
-    function toggleMirrorQr() {
-        const mirrorQrSection = document.getElementById('mirrorQrSection');
-        if (mirrorQrSection.classList.contains('show')) {
-            mirrorQrSection.classList.remove('show');
-        } else {
-            if (currentXrpUri) {
-                mirrorQrSection.classList.add('show');
+    // Apple WatchにQRコード画像を共有する機能
+    async function sendQrToWatch() {
+        if (!currentQrImageUrl) {
+            alert('先に「XRPを投げ銭してもらう」ボタンでQRコードを生成してください。');
+            return;
+        }
+
+        const watchTransferSection = document.getElementById('watchTransferSection');
+        watchTransferSection.classList.add('show'); // 説明文を表示
+
+        try {
+            // QRコード画像をBlobとしてフェッチ
+            const response = await fetch(currentQrImageUrl);
+            const blob = await response.blob();
+            const file = new File([blob], 'xrp_qr_code.png', { type: 'image/png' });
+
+            // Web Share APIを使用して共有（AirDropなどを利用）
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: 'XRP QRコード',
+                    text: 'XRP投げ銭用のQRコードです。Apple Watchに送信してください。'
+                });
+                console.log('QRコードが共有されました。');
             } else {
-                alert('先に「XRPを投げ銭してもらう」ボタンでQRコードを生成してください。');
+                alert('このブラウザまたはデバイスでは、QRコードを直接共有できません。QRコードを長押しして画像を保存し、写真アプリからApple Watchに転送してください。');
+                console.warn('Web Share API (Files) is not supported or cannot share these files.');
+                // 共有APIが利用できない場合のフォールバックとして、画像保存を促す
+                // または、ここで画像をダウンロードさせる処理を追加することも検討できます。
             }
+        } catch (error) {
+            console.error('QRコードの共有に失敗しました:', error);
+            alert('QRコードの共有に失敗しました。QRコード画像を長押しして保存し、写真アプリ経由でApple Watchに転送してください。');
         }
     }
 
