@@ -29,6 +29,7 @@
       --pin-input-border: #405a80;
       --note-line-color: #5c6e91; /* Memo line color */
       --copy-icon-color: #bbbbbb; /* Copy icon color */
+      --mirror-bg: #2b3a5d; /* Background for mirror QR section */
 
       /* Day Mode Overrides (initially hidden) */
       --day-bg-color: #f0f2f5;
@@ -51,9 +52,9 @@
       --day-pin-input-border: #cccccc;
       --day-note-line-color: #e0e0e0; /* Day memo line color */
       --day-copy-icon-color: #666666; /* Copy icon color */
+      --day-mirror-bg: #e8e8e8; /* Background for mirror QR section */
     }
 
-    /* Day Mode styles */
     body.day-mode {
       --bg-color: var(--day-bg-color);
       --container-bg: var(--day-container-bg);
@@ -75,24 +76,24 @@
       --pin-input-border: var(--day-pin-input-border);
       --note-line-color: var(--day-note-line-color);
       --copy-icon-color: var(--day-copy-icon-color);
+      --mirror-bg: var(--day-mirror-bg);
     }
 
     body {
-      font-family: 'Orbitron', sans-serif; /* Futuristic font */
+      font-family: 'Orbitron', sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 15px; /* 全体的なパディングをさらに詰める */
       background-color: var(--bg-color);
       display: flex;
       justify-content: center;
-      min-height: 100vh; /* 少なくともビューポートの高さ */
+      min-height: 100vh;
       color: var(--text-color);
       position: relative;
       transition: background-color 0.5s ease;
-      overflow-y: auto; /* 必要に応じて縦スクロールを有効にする */
-      line-height: 1.4; /* 全体の行間を詰める */
+      overflow-y: auto;
+      line-height: 1.35; /* 全体の行間をさらに詰める */
     }
 
-    /* Background animation for a dynamic feel (Night mode only) */
     body:not(.day-mode)::before {
       content: '';
       position: absolute;
@@ -114,45 +115,45 @@
 
     .container {
       background-color: var(--container-bg);
-      padding: 25px; /* 全体的にパディングを減らす */
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      padding: 20px; /* 全体的にパディングをさらに減らす */
+      border-radius: 12px; /* 角丸を少し小さく */
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); /* シャドウを調整 */
       text-align: center;
-      max-width: 550px;
+      max-width: 500px; /* 最大幅を少し小さく */
       width: 100%;
-      border: 2px solid var(--border-color);
+      border: 1px solid var(--border-color); /* 枠線を細く */
       position: relative;
-      animation: fadeIn 1s ease-out;
+      animation: fadeIn 0.8s ease-out; /* アニメーション時間を短縮 */
       transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
-      margin: auto; /* コンテンツが短くても中央に配置 */
+      margin: auto;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
+      from { opacity: 0; transform: translateY(-15px); } /* 少しだけ移動距離を減らす */
       to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
       color: var(--primary-button-bg);
-      margin-bottom: 20px; /* マージンを減らす */
-      font-size: 2.2em; /* 文字を小さく */
+      margin-bottom: 18px; /* マージンをさらに減らす */
+      font-size: 2em; /* 文字をさらに小さく */
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px; /* ギャップを減らす */
-      text-shadow: 0 0 10px rgba(74, 144, 226, 0.5); /* Glowing effect */
+      gap: 8px; /* ギャップをさらに減らす */
+      text-shadow: 0 0 8px rgba(74, 144, 226, 0.5); /* Glowing effect */
       transition: color 0.5s ease, text-shadow 0.5s ease;
     }
     body.day-mode h1 {
-      text-shadow: none; /* No glow in day mode */
+      text-shadow: none;
     }
 
     h2 {
       color: var(--text-color);
-      margin-top: 25px; /* マージンを減らす */
-      margin-bottom: 15px; /* マージンを減らす */
-      font-size: 1.6em; /* 文字を小さく */
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+      margin-top: 20px; /* マージンをさらに減らす */
+      margin-bottom: 12px; /* マージンをさらに減らす */
+      font-size: 1.5em; /* 文字をさらに小さく */
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
       transition: color 0.5s ease, text-shadow 0.5s ease;
     }
     body.day-mode h2 {
@@ -161,101 +162,103 @@
 
     p {
       color: var(--text-color);
-      line-height: 1.5; /* 行間を調整 */
-      font-size: 0.95em; /* 文字を小さく */
-      margin-bottom: 10px; /* マージンを詰める */
+      line-height: 1.4; /* 行間をさらに詰める */
+      font-size: 0.9em; /* 文字をさらに小さく */
+      margin-bottom: 8px; /* マージンを詰める */
       transition: color 0.5s ease;
     }
 
     .streamer-info p {
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
     .xrpl-address-wrapper {
       position: relative;
-      display: flex; /* flexboxで要素を横並びにする */
-      align-items: center; /* 垂直方向中央揃え */
-      gap: 5px; /* インプットとアイコンの間に隙間 */
-      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 12px; /* マージンを詰める */
     }
 
     .xrpl-address {
       font-family: 'Share Tech Mono', monospace;
       background-color: var(--input-bg);
-      padding: 10px 12px; /* パディングを減らす */
-      border-radius: 8px;
-      font-size: 0.9em; /* 文字を小さく */
+      padding: 9px 10px; /* パディングをさらに減らす */
+      border-radius: 6px; /* 角丸を小さく */
+      font-size: 0.85em; /* 文字をさらに小さく */
       color: var(--text-color);
       word-break: break-all;
       border: 1px solid var(--border-color);
-      width: 100%; /* 親要素の幅いっぱいに */
-      flex-grow: 1; /* インプットが利用可能なスペースを埋める */
+      width: 100%;
+      flex-grow: 1;
       transition: all 0.3s ease;
     }
 
     .xrpl-address:focus {
       outline: none;
       border-color: var(--primary-button-bg);
-      box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
+      box-shadow: 0 0 6px rgba(74, 144, 226, 0.6);
     }
     body.day-mode .xrpl-address:focus {
-      box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
+      box-shadow: 0 0 6px rgba(33, 150, 243, 0.6);
     }
 
     .copy-icon-button {
       background: none;
       border: none;
       cursor: pointer;
-      padding: 5px; /* アイコンのクリック範囲 */
+      padding: 3px; /* アイコンのクリック範囲を調整 */
       color: var(--copy-icon-color);
-      font-size: 1.3em; /* アイコンサイズを調整 */
+      font-size: 1.1em; /* アイコンサイズを調整 */
       transition: color 0.3s ease, transform 0.2s ease;
-      position: absolute; /* アドレスインプットの右端に配置 */
-      right: 10px;
+      position: absolute;
+      right: 8px; /* 位置調整 */
+      top: 50%;
+      transform: translateY(-50%);
     }
 
     .copy-icon-button:hover {
       color: var(--primary-button-bg);
-      transform: scale(1.1);
+      transform: translateY(-50%) scale(1.1);
     }
     .copy-icon-button:active {
-      transform: scale(0.9);
+      transform: translateY(-50%) scale(0.9);
     }
 
     .address-buttons {
       display: flex;
-      gap: 10px; /* ボタン間のスペースを詰める */
+      gap: 8px; /* ボタン間のスペースを詰める */
       justify-content: center;
-      margin-bottom: 10px; /* 下のマージンを詰める */
+      margin-bottom: 8px; /* 下のマージンを詰める */
     }
 
     .connect-button {
       background-color: var(--primary-button-bg);
       color: white;
       border: none;
-      padding: 8px 15px; /* パディングを減らす */
-      border-radius: 8px;
+      padding: 7px 12px; /* パディングをさらに減らす */
+      border-radius: 6px; /* 角丸を小さく */
       cursor: pointer;
-      font-size: 0.9em; /* 文字を小さく */
+      font-size: 0.85em; /* 文字をさらに小さく */
       font-family: 'Orbitron', sans-serif;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      flex-grow: 1; /* ボタンを横に広げる */
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3); /* シャドウを調整 */
+      flex-grow: 1;
     }
 
     .connect-button:hover {
       background-color: var(--primary-button-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+      transform: translateY(-1px); /* 少しだけ移動 */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     .copy-status {
       color: var(--success-color);
       font-weight: bold;
-      margin-top: 10px; /* マージンを減らす */
-      font-size: 0.85em; /* 文字を小さく */
-      opacity: 0; /* 初期非表示 */
-      transition: opacity 0.5s ease-out; /* フェードアウトアニメーション */
+      margin-top: 8px; /* マージンを減らす */
+      font-size: 0.8em; /* 文字をさらに小さく */
+      opacity: 0;
+      transition: opacity 0.4s ease-out; /* フェードアウトアニメーションを短縮 */
     }
     .copy-status.show {
       opacity: 1;
@@ -265,16 +268,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 20px; /* マージンを減らす */
-      gap: 10px; /* ギャップを減らす */
+      margin-bottom: 15px; /* マージンを減らす */
+      gap: 8px; /* ギャップを減らす */
     }
 
     .input-group input[type="number"] {
-      padding: 10px 12px; /* パディングを減らす */
+      padding: 9px 10px; /* パディングをさらに減らす */
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 1.1em; /* 文字を小さく */
-      width: 120px; /* 幅を調整 */
+      border-radius: 6px; /* 角丸を小さく */
+      font-size: 1em; /* 文字をさらに小さく */
+      width: 100px; /* 幅を調整 */
       text-align: right;
       background-color: var(--input-bg);
       color: var(--text-color);
@@ -285,17 +288,17 @@
     .input-group input[type="number"]:focus {
       outline: none;
       border-color: var(--primary-button-bg);
-      box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
+      box-shadow: 0 0 6px rgba(74, 144, 226, 0.6);
     }
     body.day-mode .input-group input[type="number"]:focus {
-      box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
+      box-shadow: 0 0 6px rgba(33, 150, 243, 0.6);
     }
 
     .input-group span {
-      font-size: 1.1em; /* 文字を小さく */
+      font-size: 1em; /* 文字をさらに小さく */
       font-weight: bold;
       color: var(--primary-button-bg);
-      text-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+      text-shadow: 0 0 4px rgba(74, 144, 226, 0.3);
       transition: color 0.5s ease, text-shadow 0.5s ease;
     }
     body.day-mode .input-group span {
@@ -303,28 +306,27 @@
     }
 
     .tip-button {
-      background-color: var(--accent-color-2); /* Reddish pink for action */
+      background-color: var(--accent-color-2);
       color: white;
       border: none;
-      padding: 12px 25px; /* パディングを減らす */
-      border-radius: 10px;
-      font-size: 1.2em; /* 文字を小さく */
+      padding: 10px 20px; /* パディングをさらに減らす */
+      border-radius: 8px; /* 角丸を少し小さく */
+      font-size: 1.1em; /* 文字をさらに小さく */
       cursor: pointer;
       font-family: 'Orbitron', sans-serif;
       transition: all 0.3s ease;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-      letter-spacing: 0.5px; /* 文字間隔を詰める */
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4); /* シャドウを調整 */
+      letter-spacing: 0.2px; /* 文字間隔をさらに詰める */
     }
 
     .tip-button:hover {
-      background-color: #d63d58; /* Darker pink */
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      background-color: #d63d58;
+      transform: translateY(-2px) scale(1.01); /* 少しだけ移動と拡大 */
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
     }
     body.day-mode .tip-button:hover {
-      background-color: #f5511e; /* Darker orange */
+      background-color: #f5511e;
     }
-
 
     .tip-button:disabled {
       background-color: #666;
@@ -334,12 +336,12 @@
     }
 
     .message {
-      margin-top: 20px; /* マージンを減らす */
-      padding: 10px 15px; /* パディングを減らす */
-      border-radius: 10px;
+      margin-top: 15px; /* マージンを減らす */
+      padding: 8px 12px; /* パディングをさらに減らす */
+      border-radius: 8px;
       font-weight: bold;
-      font-size: 1em; /* 文字を小さく */
-      transition: all 0.5s ease;
+      font-size: 0.9em; /* 文字をさらに小さく */
+      transition: all 0.4s ease; /* アニメーション時間を短縮 */
     }
 
     .message.info {
@@ -361,15 +363,15 @@
     }
 
     .qr-code-area {
-      margin-top: 25px; /* マージンを減らす */
+      margin-top: 20px; /* マージンを減らす */
       padding: 15px; /* パディングを減らす */
       background-color: var(--accent-color-1);
-      border-radius: 12px;
+      border-radius: 10px; /* 角丸を小さく */
       border: 2px dashed var(--qr-border);
-      display: none; /* Initially hidden */
+      display: none;
       opacity: 0;
-      transform: scale(0.9);
-      transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.5s ease, border-color 0.5s ease;
+      transform: scale(0.95); /* 少しだけ縮小 */
+      transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.5s ease, border-color 0.5s ease; /* アニメーション時間を短縮 */
     }
 
     .qr-code-area.show {
@@ -378,294 +380,207 @@
     }
 
     .qr-image {
-      width: 180px; /* QRコードを小さく */
-      height: 180px;
-      margin: 15px auto; /* マージンを減らす */
+      width: 160px; /* QRコードをさらに小さく */
+      height: 160px;
+      margin: 15px auto;
       display: block;
-      border: 6px solid white; /* 枠線を細く */
-      border-radius: 5px;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      border: 5px solid white; /* 枠線を細く */
+      border-radius: 4px; /* 角丸を小さく */
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* シャドウを調整 */
       transition: border-color 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .qr-image.mirror {
+        transform: scaleX(-1); /* 鏡文字 */
     }
     
     .qr-code-area p {
-      font-size: 0.85em; /* 文字を小さく */
-      line-height: 1.3;
-      margin-bottom: 8px; /* マージンを詰める */
+      font-size: 0.8em; /* 文字をさらに小さく */
+      line-height: 1.25;
+      margin-bottom: 6px; /* マージンを詰める */
     }
 
     .qr-code-area p:last-of-type {
-        margin-top: 15px;
+        margin-top: 12px; /* マージンを詰める */
     }
 
-    .open-xaman-button {
-      background-color: var(--success-color); /* Green for direct action */
+    .qr-buttons-group {
+        display: flex;
+        flex-wrap: wrap; /* ボタンを折り返す */
+        justify-content: center;
+        gap: 8px; /* ボタン間のスペース */
+        margin-top: 10px;
+    }
+
+    .open-xaman-button, .mirror-qr-button {
+      background-color: var(--success-color);
       color: white;
       border: none;
-      padding: 10px 20px; /* パディングを減らす */
-      border-radius: 8px;
-      font-size: 1em; /* 文字を小さく */
+      padding: 9px 18px; /* パディングをさらに減らす */
+      border-radius: 6px; /* 角丸を小さく */
+      font-size: 0.9em; /* 文字をさらに小さく */
       cursor: pointer;
       font-family: 'Orbitron', sans-serif;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      margin-top: 10px; /* スペースを詰める */
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      flex-grow: 1; /* ボタンを横に広げる */
+      min-width: 120px; /* 最小幅を設定 */
     }
-    .open-xaman-button:hover {
-      background-color: #4CAF50; /* Darker green */
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    .open-xaman-button:hover, .mirror-qr-button:hover {
+      background-color: #4CAF50;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
-    body.day-mode .open-xaman-button {
+    body.day-mode .open-xaman-button, body.day-mode .mirror-qr-button {
       background-color: var(--day-success-color);
     }
-    body.day-mode .open-xaman-button:hover {
+    body.day-mode .open-xaman-button:hover, body.day-mode .mirror-qr-button:hover {
       background-color: #388e3c;
     }
+
+    /* Mirror QR specific styles */
+    .mirror-qr-section {
+        background-color: var(--mirror-bg);
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+        box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+        display: none; /* Initially hidden */
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.5s ease;
+    }
+    .mirror-qr-section.show {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .mirror-qr-section p {
+        margin-bottom: 10px;
+        font-size: 0.85em;
+    }
+    .mirror-qr-image {
+        width: 120px; /* 鏡文字QRを小さく */
+        height: 120px;
+        margin: 0 auto 10px auto;
+        display: block;
+        border: 4px solid white;
+        border-radius: 4px;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        transform: scaleX(-1); /* 鏡文字 */
+    }
+
 
     hr {
       border: none;
       border-top: 1px dashed var(--hr-color);
-      margin: 30px 0; /* マージンを減らす */
+      margin: 25px 0; /* マージンを減らす */
       transition: border-color 0.5s ease;
     }
 
-    /* Small glowing effect on elements on hover */
     .container button:not(.tip-button):hover,
     .container input:not([type="number"]):hover {
-      box-shadow: 0 0 15px rgba(74, 144, 226, 0.8);
+      box-shadow: 0 0 12px rgba(74, 144, 226, 0.8); /* シャドウを調整 */
     }
     body.day-mode .container button:not(.tip-button):hover,
     body.day-mode .container input:not([type="number"]):hover {
-      box-shadow: 0 0 15px rgba(33, 150, 243, 0.8);
+      box-shadow: 0 0 12px rgba(33, 150, 243, 0.8);
     }
 
     /* Theme Toggle Switch */
     .theme-switch-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end; /* Align to the right */
-      margin-bottom: 15px; /* マージンを減らす */
-      gap: 8px; /* ギャップを減らす */
+      margin-bottom: 12px; /* マージンを減らす */
+      gap: 6px; /* ギャップを減らす */
     }
     .theme-switch-wrapper span {
-      font-size: 0.85em; /* 文字を小さく */
-      color: var(--text-color);
-      transition: color 0.5s ease;
+      font-size: 0.8em; /* 文字をさらに小さく */
     }
     .theme-switch {
-      display: inline-block;
-      height: 24px; /* 高さを小さく */
-      position: relative;
-      width: 44px; /* 幅を小さく */
-    }
-    .theme-switch input {
-      display:none;
-    }
-    .slider {
-      background-color: var(--accent-color-1);
-      bottom: 0;
-      cursor: pointer;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      transition: .4s;
-      border-radius: 34px;
-      box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-    }
-    body.day-mode .slider {
-      background-color: #ccc;
+      height: 22px; /* 高さを小さく */
+      width: 40px; /* 幅を小さく */
     }
     .slider:before {
-      background-color: #fff;
-      bottom: 3px; /* 位置調整 */
-      content: "";
+      bottom: 2px; /* 位置調整 */
       height: 18px; /* サイズを小さく */
-      left: 3px; /* 位置調整 */
-      position: absolute;
-      transition: .4s;
+      left: 2px; /* 位置調整 */
       width: 18px; /* サイズを小さく */
-      border-radius: 50%;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    input:checked + .slider {
-      background-color: var(--primary-button-bg);
     }
     input:checked + .slider:before {
-      transform: translateX(20px); /* スライド距離調整 */
+      transform: translateX(18px); /* スライド距離調整 */
     }
 
     /* PIN and Memo Section */
     .memo-section {
-      margin-top: 25px; /* マージンを減らす */
-      padding: 20px; /* パディングを減らす */
-      background-color: var(--container-bg);
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      text-align: left;
-      display: none; /* Initially hidden */
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+      margin-top: 20px; /* マージンを減らす */
+      padding: 15px; /* パディングを減らす */
+      border-radius: 10px; /* 角丸を小さく */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* シャドウを調整 */
     }
     .memo-section.show {
-      display: block;
-      opacity: 1;
       transform: translateY(0);
     }
 
     .memo-section h3 {
-      color: var(--primary-button-bg);
-      font-size: 1.3em; /* 文字を小さく */
-      margin-bottom: 15px; /* マージンを減らす */
-      text-align: center;
-      transition: color 0.5s ease;
+      font-size: 1.2em; /* 文字をさらに小さく */
+      margin-bottom: 12px; /* マージンを減らす */
     }
 
     .pin-input-group {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 15px; /* マージンを減らす */
+      margin-bottom: 12px; /* マージンを減らす */
     }
     .pin-input-group input {
-      width: 120px; /* 幅を小さく */
-      padding: 8px 12px; /* パディングを減らす */
-      font-size: 1em; /* 文字を小さく */
-      border: 1px solid var(--pin-input-border);
-      border-radius: 8px;
-      background-color: var(--pin-input-bg);
-      color: var(--text-color);
-      text-align: center;
-      font-family: 'Share Tech Mono', monospace;
-      transition: all 0.3s ease;
-    }
-    .pin-input-group input:focus {
-      outline: none;
-      border-color: var(--primary-button-bg);
-      box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
-    }
-    body.day-mode .pin-input-group input:focus {
-      box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
+      width: 100px; /* 幅をさらに小さく */
+      padding: 7px 10px; /* パディングをさらに減らす */
+      font-size: 0.9em; /* 文字をさらに小さく */
+      border-radius: 6px;
     }
 
     .pin-button {
-      background-color: var(--primary-button-bg);
-      color: white;
-      border: none;
-      padding: 8px 20px; /* パディングを減らす */
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.9em; /* 文字を小さく */
-      font-family: 'Orbitron', sans-serif;
-      transition: all 0.3s ease;
-      margin-top: 10px; /* マージンを減らす */
-      width: 100%;
-    }
-    .pin-button:hover {
-      background-color: var(--primary-button-hover);
-      transform: translateY(-2px);
-    }
-    .pin-button:disabled {
-      background-color: #666;
-      cursor: not-allowed;
-      transform: none;
+      padding: 7px 18px; /* パディングをさらに減らす */
+      border-radius: 6px;
+      font-size: 0.85em; /* 文字をさらに小さく */
+      margin-top: 8px; /* マージンを減らす */
     }
     .pin-status {
-      font-size: 0.8em; /* 文字を小さく */
-      margin-top: 8px; /* マージンを減らす */
-      text-align: center;
-      color: var(--accent-color-2);
-      transition: color 0.5s ease;
+      font-size: 0.75em; /* 文字をさらに小さく */
+      margin-top: 6px; /* マージンを減らす */
     }
 
-    /* Memo input styling (iPhone Notes inspired) */
+    /* Memo input styling */
     .memo-input-container {
-      margin-top: 20px; /* マージンを減らす */
-      position: relative;
-      display: none; /* Hidden until PIN is correct */
-      opacity: 0;
-      transform: scaleY(0);
-      transform-origin: top;
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      border: 1px solid var(--note-border); /* Outer border for the memo area */
-      border-radius: 10px;
-      background-color: var(--note-bg);
-      padding: 10px; /* Padding inside the memo box */
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-      overflow: hidden; /* Ensure lines don't bleed outside */
-    }
-    .memo-input-container.show {
-      display: block;
-      opacity: 1;
-      transform: scaleY(1);
+      margin-top: 15px; /* マージンを減らす */
+      border-radius: 8px; /* 角丸を小さく */
+      padding: 8px; /* パディングを減らす */
     }
 
     .memo-input {
-      width: 100%; /* Take full width of its container's padding */
-      min-height: 120px; /* min-heightを調整 */
-      padding: 5px; /* Adjust padding to make lines align better */
-      border: none; /* No individual border for the textarea */
-      background-color: var(--note-bg);
-      color: var(--note-text);
-      font-family: 'Roboto', sans-serif; /* More standard font for notes */
-      font-size: 0.95em; /* 文字を小さく */
-      resize: vertical;
-      line-height: 1.7em; /* Space for lines (小さく) */
-      box-shadow: none; /* No individual box-shadow */
-      outline: none; /* No outline on focus */
-      overflow-y: auto; /* Allow scrolling for long notes */
+      min-height: 100px; /* min-heightをさらに調整 */
+      padding: 4px; /* パディングをさらに調整 */
+      font-size: 0.9em; /* 文字をさらに小さく */
+      line-height: 1.6em; /* 行間をさらに詰める */
       background-image:
           repeating-linear-gradient(
               to bottom,
               transparent,
-              transparent 1.6em, /* Line height - 0.1em margin */
-              var(--note-line-color) 1.7em /* Line color */
+              transparent 1.5em, /* Line height - 0.1em margin */
+              var(--note-line-color) 1.6em /* Line color */
           );
-      background-position: left top;
-      background-size: 100% 1.7em; /* background-sizeも行間に合わせる */
+      background-size: 100% 1.6em; /* background-sizeも行間に合わせる */
     }
     body.day-mode .memo-input {
       background-image:
           repeating-linear-gradient(
               to bottom,
               transparent,
-              transparent 1.6em,
-              var(--day-note-line-color) 1.7em
+              transparent 1.5em,
+              var(--day-note-line-color) 1.6em
           );
-    }
-
-    .memo-label {
-      color: var(--text-color);
-      font-family: 'Roboto', sans-serif;
-      font-size: 0.85em; /* 文字を小さく */
-      margin-bottom: 6px; /* マージンを詰める */
-      display: block;
-      transition: color 0.5s ease;
-      text-align: center; /* Center the label above the memo */
-      font-weight: bold;
-    }
-
-    /* Elements to hide/show dynamically */
-    .memo-input-controls {
-      text-align: center;
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-    .memo-input-controls.hidden {
-      opacity: 0;
-      height: 0;
-      overflow: hidden;
-      margin-bottom: 0 !important;
-      padding-top: 0 !important;
-      padding-bottom: 0 !important;
     }
 
     /* Animations for emojis */
     @keyframes pulse {
       0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+      50% { transform: scale(1.08); } /* 少し控えめなアニメーション */
       100% { transform: scale(1); }
     }
     @keyframes rotate {
@@ -685,7 +600,7 @@
       <span>🌌 Night Mode</span>
     </div>
 
-    <h1><span style="font-size: 1.5em; animation: pulse 2s infinite;">💸</span> XRPを受け取る</h1>
+    <h1><span style="font-size: 1.4em; animation: pulse 2s infinite;">💸</span> XRPを受け取る</h1>
 
     <div class="streamer-info">
       <p>あなたのXRPLテストネットアドレスを入力するか、ウォレットを接続してください：</p>
@@ -702,25 +617,34 @@
     <hr>
 
     <div class="viewer-section">
-      <h2><span style="font-size: 1.2em; animation: rotate 3s infinite linear;">💰</span> XRPを投げ銭してもらう</h2>
+      <h2><span style="font-size: 1.1em; animation: rotate 3s infinite linear;">💰</span> XRPを投げ銭してもらう</h2>
       <p>（このデモでは0.1XRP固定です）</p>
       <div class="input-group">
         <input type="number" id="tipAmount" value="0.1" disabled> <span>XRP</span>
       </div>
-      <button onclick="sendTip()" id="tipButton" class="tip-button">XRPを投げ銭してもらう <span style="margin-left: 10px;">✨</span></button>
+      <button onclick="sendTip()" id="tipButton" class="tip-button">XRPを投げ銭してもらう <span style="margin-left: 8px;">✨</span></button>
       <p id="message" class="message"></p>
       <div id="qrCodeArea" class="qr-code-area">
         <p>他のデバイスでスキャンする場合: <br>XamanアプリでQRコードをスキャンしてください。</p>
         <img id="qrImage" class="qr-image" alt="QR Code">
-        <p style="margin-top: 20px;">**同じ携帯で送金する場合:**</p>
-        <button id="openXamanButton" class="open-xaman-button">Xamanアプリで開く <span style="margin-left: 5px;">📱</span></button>
+        
+        <p>**同じ携帯で送金する場合:**</p>
+        <div class="qr-buttons-group">
+            <button id="openXamanButton" class="open-xaman-button">Xamanアプリで開く <span style="margin-left: 5px;">📱</span></button>
+            <button id="showMirrorQrButton" class="mirror-qr-button" onclick="toggleMirrorQr()">鏡文字QRを表示/非表示 🔄</button>
+        </div>
+
+        <div id="mirrorQrSection" class="mirror-qr-section">
+            <p>iPhoneを鏡に近づけてインカメラでスキャンしてください。</p>
+            <img id="mirrorQrImage" class="mirror-qr-image" alt="Mirror QR Code">
+        </div>
       </div>
     </div>
 
     <hr>
 
     <div id="memoSection" class="memo-section">
-        <h3><span style="font-size: 1.2em;">📝</span> メモ機能</h3>
+        <h3><span style="font-size: 1.1em;">📝</span> メモ機能</h3>
         
         <div id="memoInputControls" class="memo-input-controls">
           <p id="pinInstruction"></p>
@@ -771,7 +695,8 @@
       // Event listener for the "Open in Xaman" button
       document.getElementById('openXamanButton').addEventListener('click', () => {
           if (currentXrpUri) {
-              window.location.href = currentXrpUri; // Attempt to open the Xaman app via deep link
+              // モバイル環境でのディープリンク試行
+              openXamanDeepLink(currentXrpUri);
           } else {
               alert('まず投げ銭ボタンを押して送金リンクを生成してください。');
           }
@@ -782,8 +707,8 @@
       document.addEventListener('mousemove', resetInactivityTimer);
       document.addEventListener('keydown', resetInactivityTimer);
       document.addEventListener('click', resetInactivityTimer);
-      document.addEventListener('scroll', resetInactivityTimer); // スクロールもアクティビティとして追加
-      document.addEventListener('touchstart', resetInactivityTimer); // モバイル向けタッチイベント
+      document.addEventListener('scroll', resetInactivityTimer);
+      document.addEventListener('touchstart', resetInactivityTimer);
       resetInactivityTimer(); // ページロード時にもタイマーをリセット
     });
 
@@ -845,7 +770,7 @@
         copyStatus.classList.add('show');
         setTimeout(() => {
           copyStatus.classList.remove('show');
-        }, 2000);
+        }, 1500); // 表示時間を少し短縮
       } catch (err) {
         console.error('コピー失敗:', err);
         alert('コピーに失敗しました。');
@@ -861,6 +786,7 @@
       const messageElement = document.getElementById('message');
       const qrCodeArea = document.getElementById('qrCodeArea');
       const qrImage = document.getElementById('qrImage');
+      const mirrorQrImage = document.getElementById('mirrorQrImage');
       const address = document.getElementById('streamerAddressInput').value.trim();
 
       if (!isValidXrplAddress(address)) {
@@ -880,9 +806,11 @@
       messageElement.textContent = '🌌 QRコードを生成中です...';
       messageElement.className = 'message info';
       qrCodeArea.classList.remove('show');
+      document.getElementById('mirrorQrSection').classList.remove('show'); // 鏡文字QRも隠す
       
       qrImage.src = qrUrl;
-      
+      mirrorQrImage.src = qrUrl; // 鏡文字用にも同じQRコードを生成
+
       // QRコードのロードが完了してから表示する
       qrImage.onload = () => {
         qrCodeArea.style.display = 'block';
@@ -901,6 +829,40 @@
       };
     }
 
+    // Xamanアプリへのディープリンクを試みる関数
+    function openXamanDeepLink(uri) {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+        const isAndroid = /android/i.test(userAgent);
+
+        if (isIOS || isAndroid) {
+            // モバイル端末の場合、カスタムスキームでXamanアプリを直接開くことを試みる
+            const customSchemeUri = uri.replace('https://xrp.to/', 'xaman://xrp.to/'); // xrp.toのURIをXamanスキームに変換
+
+            window.location.href = customSchemeUri;
+
+            // フォールバックとして、一定時間後にApp Store/Google Play Storeへリダイレクト
+            // Xamanアプリがインストールされていない場合、このタイマーが発火する
+            const timeout = setTimeout(() => {
+                if (isIOS) {
+                    window.location.href = 'https://apps.apple.com/jp/app/xaman-wallet/id1492302343';
+                } else if (isAndroid) {
+                    window.location.href = 'https://play.google.com/store/apps/details?id=com.xrpllabs.xumm';
+                }
+            }, 1000); // 1秒後にリダイレクトを試みる (短縮)
+
+            // アプリが正常に開いた場合、タイマーをクリア
+            window.addEventListener('blur', () => clearTimeout(timeout), { once: true });
+            window.addEventListener('pagehide', () => clearTimeout(timeout), { once: true });
+
+        } else {
+            // PCの場合、xrp.toのウェブページを開く
+            window.open(uri, '_blank');
+            alert('PCではXamanアプリは通常インストールされていません。XRP.toのページが開きますので、そちらで手続きを進めてください。');
+        }
+    }
+
+
     // ウォレット接続機能（Xaman対応）
     async function connectWallet() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -913,23 +875,22 @@
             const appStoreLink = 'https://apps.apple.com/jp/app/xaman-wallet/id1492302343';
             const playStoreLink = 'https://play.google.com/store/apps/details?id=com.xrpllabs.xumm';
 
-            // Xamanアプリへのディープリンクを試みる
             window.location.href = xamanDeepLink;
 
-            // アプリがインストールされていない場合のフォールバック（ストアへリダイレクト）
             const timeout = setTimeout(() => {
                 if (isIOS) {
                     window.location.href = appStoreLink;
                 } else if (isAndroid) {
                     window.location.href = playStoreLink;
                 }
-            }, 1500); // 1.5秒待ってからリダイレクトを試みる
+            }, 1500);
+
+            window.addEventListener('blur', () => clearTimeout(timeout), { once: true });
+            window.addEventListener('pagehide', () => clearTimeout(timeout), { once: true });
 
             alert("Xamanアプリを起動しようとしています。もしアプリが起動しない場合は、数秒後にストアにリダイレクトされます。");
 
         } else {
-            // PCの場合の処理
-            // Xamanは主にモバイルアプリであるため、PCブラウザの拡張機能は一般的ではありません。
             if (window.xrpl) { // XRPL.jsのようなブラウザ拡張機能の検出
                 try {
                     const result = await window.xrpl.request({
@@ -953,6 +914,21 @@
         }
     }
 
+    // 鏡文字QRコードの表示/非表示を切り替える関数
+    function toggleMirrorQr() {
+        const mirrorQrSection = document.getElementById('mirrorQrSection');
+        if (mirrorQrSection.classList.contains('show')) {
+            mirrorQrSection.classList.remove('show');
+        } else {
+            if (currentXrpUri) {
+                mirrorQrSection.classList.add('show');
+            } else {
+                alert('先に「XRPを投げ銭してもらう」ボタンでQRコードを生成してください。');
+            }
+        }
+    }
+
+
     // --- PIN and Memo Functions ---
 
     function initializeMemoSection() {
@@ -964,26 +940,23 @@
 
         storedPin = localStorage.getItem(LOCAL_STORAGE_PIN_KEY);
 
-        document.getElementById('memoSection').classList.add('show'); // メモセクションを常に表示
+        document.getElementById('memoSection').classList.add('show');
 
         if (memoUnlocked && storedPin) {
-            // PINが認証済みでPINが保存されている場合（リフレッシュ後もメモを表示）
             pinInstruction.textContent = 'メモにアクセス済みです。';
-            memoInputControls.classList.add('hidden'); // PIN入力関連を隠す
-            memoInputContainer.classList.add('show'); // メモ入力欄を表示
+            memoInputControls.classList.add('hidden');
+            memoInputContainer.classList.add('show');
         } else if (storedPin) {
-            // PINは設定済みだが未認証の場合（リフレッシュ後や非アクティブ後にここにくる）
             pinInstruction.textContent = 'メモにアクセスするにはPINコードを再入力してください。';
-            memoInputControls.classList.remove('hidden'); // PIN入力関連を表示
-            memoInputContainer.classList.remove('show'); // メモ入力欄を隠す
+            memoInputControls.classList.remove('hidden');
+            memoInputContainer.classList.remove('show');
         } else {
-            // PINがまだ設定されていない場合（初回アクセス）
             pinInstruction.textContent = 'メモにアクセスするためのPINコードを4桁で設定してください。';
-            memoInputControls.classList.remove('hidden'); // PIN入力関連を表示
-            memoInputContainer.classList.remove('show'); // メモ入力欄を隠す
+            memoInputControls.classList.remove('hidden');
+            memoInputContainer.classList.remove('show');
         }
-        pinInput.value = ''; // PIN入力をクリアしておく
-        checkPinInput(); // 初期ロード時にもボタンの有効/無効をチェック
+        pinInput.value = '';
+        checkPinInput();
     }
 
     function checkPinInput() {
@@ -997,7 +970,6 @@
             verifyButton.disabled = true;
         }
 
-        // 入力中のヒント
         if (pinInput.value.length > 0 && pinInput.value.length < 4) {
             pinStatus.textContent = 'PINコードは4桁です。';
             pinStatus.style.color = 'var(--text-color)';
@@ -1010,43 +982,40 @@
         const enteredPin = document.getElementById('pinInput').value;
         const pinStatus = document.getElementById('pinStatus');
         const memoInputContainer = document.getElementById('memoInputContainer');
-        const pinInstruction = document.getElementById('pinInstruction');
         const pinInput = document.getElementById('pinInput');
         const verifyPinButton = document.getElementById('verifyPinButton');
         const memoInputControls = document.getElementById('memoInputControls');
 
 
         if (!storedPin) {
-            // 初回設定時
             localStorage.setItem(LOCAL_STORAGE_PIN_KEY, enteredPin);
             storedPin = enteredPin;
-            localStorage.setItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY, 'true'); // 初回設定時は即アンロック
+            localStorage.setItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY, 'true');
             pinStatus.textContent = '新しいPINコードが設定されました！';
             pinStatus.style.color = 'var(--success-color)';
             
-            memoInputControls.classList.add('hidden'); // PIN入力関連を隠す
-            memoInputContainer.classList.add('show'); // メモ入力欄を表示
-            pinInput.value = ''; // PIN入力をクリア
-            document.getElementById('privateMemo').focus(); // メモ入力欄にフォーカス
-            resetInactivityTimer(); // メモ開いたらタイマーリセット
+            memoInputControls.classList.add('hidden');
+            memoInputContainer.classList.add('show');
+            pinInput.value = '';
+            document.getElementById('privateMemo').focus();
+            resetInactivityTimer();
         } else {
-            // 既存PINとの比較
             if (enteredPin === storedPin) {
                 localStorage.setItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY, 'true');
                 pinStatus.textContent = 'PINコードが認証されました！';
                 pinStatus.style.color = 'var(--success-color)';
                 
-                memoInputControls.classList.add('hidden'); // PIN入力関連を隠す
-                memoInputContainer.classList.add('show'); // メモ入力欄を表示
-                pinInput.value = ''; // PIN入力をクリア
-                document.getElementById('privateMemo').focus(); // メモ入力欄にフォーカス
-                resetInactivityTimer(); // メモ開いたらタイマーリセット
+                memoInputControls.classList.add('hidden');
+                memoInputContainer.classList.add('show');
+                pinInput.value = '';
+                document.getElementById('privateMemo').focus();
+                resetInactivityTimer();
             } else {
-                localStorage.setItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY, 'false'); // 認証失敗
+                localStorage.setItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY, 'false');
                 pinStatus.textContent = 'PINコードが正しくありません。もう一度お試しください。';
                 pinStatus.style.color = 'var(--accent-color-2)';
-                memoInputContainer.classList.remove('show'); // メモ入力欄を隠す
-                pinInput.value = ''; // PIN入力をリセット
+                memoInputContainer.classList.remove('show');
+                pinInput.value = '';
                 verifyPinButton.disabled = true;
             }
         }
