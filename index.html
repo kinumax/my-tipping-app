@@ -22,11 +22,13 @@
       --input-bg: #283a5e; /* Darker blue for input */
       --qr-border: #8d9bb5; /* Light muted blue */
       --hr-color: #0c183d;
-      --note-bg: #3c4c70;
-      --note-border: #5a6b90;
-      --note-text: #ffffff;
+      --note-bg: #3c4c70; /* Memo background */
+      --note-border: #5a6b90; /* Memo border */
+      --note-text: #ffffff; /* Memo text color */
       --pin-input-bg: #22304f;
       --pin-input-border: #405a80;
+      --note-line-color: #5c6e91; /* Memo line color */
+
 
       /* Day Mode Overrides (initially hidden) */
       --day-bg-color: #f0f2f5;
@@ -42,11 +44,12 @@
       --day-input-bg: #f9f9f9;
       --day-qr-border: #9e9e9e;
       --day-hr-color: #e0e0e0;
-      --day-note-bg: #ffffff;
-      --day-note-border: #d0d0d0;
-      --day-note-text: #333333;
+      --day-note-bg: #ffffff; /* Day memo background */
+      --day-note-border: #d0d0d0; /* Day memo border */
+      --day-note-text: #333333; /* Day memo text */
       --day-pin-input-bg: #f5f5f5;
       --day-pin-input-border: #cccccc;
+      --day-note-line-color: #e0e0e0; /* Day memo line color */
     }
 
     /* Day Mode styles */
@@ -69,6 +72,7 @@
       --note-text: var(--day-note-text);
       --pin-input-bg: var(--day-pin-input-bg);
       --pin-input-border: var(--day-pin-input-border);
+      --note-line-color: var(--day-note-line-color);
     }
 
     body {
@@ -476,12 +480,13 @@
     }
 
     .pin-input-group {
-      display: flex; /* Changed to flex for centering single input */
+      display: flex;
       justify-content: center;
       margin-bottom: 20px;
+      /* pinInputとverifyPinButtonを隠すため、pinInputContainerのshowクラスで制御 */
     }
     .pin-input-group input {
-      width: 150px; /* Adjusted width for single input */
+      width: 150px;
       padding: 10px 15px;
       font-size: 1.1em;
       border: 1px solid var(--pin-input-border);
@@ -500,7 +505,6 @@
     body.day-mode .pin-input-group input:focus {
       box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
     }
-
 
     .pin-button {
       background-color: var(--primary-button-bg);
@@ -541,6 +545,12 @@
       transform: scaleY(0);
       transform-origin: top;
       transition: opacity 0.5s ease, transform 0.5s ease;
+      border: 1px solid var(--note-border); /* Outer border for the memo area */
+      border-radius: 10px;
+      background-color: var(--note-bg);
+      padding: 10px; /* Padding inside the memo box */
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden; /* Ensure lines don't bleed outside */
     }
     .memo-input-container.show {
       display: block;
@@ -549,27 +559,37 @@
     }
 
     .memo-input {
-      width: calc(100% - 20px);
-      min-height: 120px;
-      padding: 15px;
-      border: 1px solid var(--note-border);
-      border-radius: 10px;
+      width: 100%; /* Take full width of its container's padding */
+      min-height: 150px; /* Increased min-height for more memo space */
+      padding: 5px; /* Adjust padding to make lines align better */
+      border: none; /* No individual border for the textarea */
       background-color: var(--note-bg);
       color: var(--note-text);
       font-family: 'Roboto', sans-serif; /* More standard font for notes */
       font-size: 1em;
       resize: vertical;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-      line-height: 1.5;
-      transition: all 0.3s ease;
+      line-height: 1.8em; /* Space for lines */
+      box-shadow: none; /* No individual box-shadow */
+      outline: none; /* No outline on focus */
+      overflow-y: auto; /* Allow scrolling for long notes */
+      background-image:
+          repeating-linear-gradient(
+              to bottom,
+              transparent,
+              transparent 1.7em, /* Line height - 0.1em margin */
+              var(--note-line-color) 1.8em /* Line color */
+          );
+      background-position: left top;
+      background-size: 100% 1.8em;
     }
-    .memo-input:focus {
-      outline: none;
-      border-color: var(--primary-button-bg);
-      box-shadow: 0 0 10px rgba(74, 144, 226, 0.4);
-    }
-    body.day-mode .memo-input:focus {
-      box-shadow: 0 0 10px rgba(33, 150, 243, 0.4);
+    body.day-mode .memo-input {
+      background-image:
+          repeating-linear-gradient(
+              to bottom,
+              transparent,
+              transparent 1.7em,
+              var(--day-note-line-color) 1.8em
+          );
     }
 
     .memo-label {
@@ -579,6 +599,23 @@
       margin-bottom: 8px;
       display: block;
       transition: color 0.5s ease;
+      text-align: center; /* Center the label above the memo */
+      font-weight: bold;
+    }
+
+    /* Elements to hide/show dynamically */
+    .memo-input-controls {
+      /* This div will contain pinInput, verifyPinButton, pinInstruction, pinStatus */
+      text-align: center;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .memo-input-controls.hidden {
+      opacity: 0;
+      transform: translateY(-20px);
+      height: 0;
+      overflow: hidden;
+      margin-bottom: 0 !important;
     }
 
     /* Animations for emojis */
@@ -638,16 +675,18 @@
 
     <div id="memoSection" class="memo-section">
         <h3><span style="font-size: 1.2em;">📝</span> メモ機能</h3>
-        <p id="pinInstruction"></p>
-        <div class="pin-input-group">
-            <input type="password" id="pinInput" placeholder="PINコード (4桁)" maxlength="4" onkeyup="checkPinInput()">
+        
+        <div id="memoInputControls" class="memo-input-controls">
+          <p id="pinInstruction"></p>
+          <div class="pin-input-group">
+              <input type="password" id="pinInput" placeholder="PINコード (4桁)" maxlength="4" onkeyup="checkPinInput()">
+          </div>
+          <p id="pinStatus" class="pin-status"></p>
+          <button onclick="verifyPin()" id="verifyPinButton" class="pin-button" disabled>PINを認証</button>
         </div>
-        <p id="pinStatus" class="pin-status"></p>
-        <button onclick="verifyPin()" id="verifyPinButton" class="pin-button" disabled>PINを認証</button>
 
         <div id="memoInputContainer" class="memo-input-container">
-            <label for="privateMemo" class="memo-label">ここにメモを入力してください：</label>
-            <textarea id="privateMemo" class="memo-input" placeholder="秘密のメモ..."></textarea>
+            <textarea id="privateMemo" class="memo-input" placeholder="メモを入力..."></textarea>
         </div>
     </div>
 
@@ -658,6 +697,10 @@
     const LOCAL_STORAGE_PIN_KEY = 'memoPinCode'; // PINを保存するキー
     const LOCAL_STORAGE_MEMO_UNLOCKED_KEY = 'memoUnlocked'; // メモがアンロックされた状態を保存するキー
     const LOCAL_STORAGE_MEMO_CONTENT_KEY = 'privateMemoContent'; // メモの内容を保存するキー
+
+    let storedPin = null; // デバイスに保存されているPIN
+    let inactivityTimer; // スリープモード（非アクティブ）を検出するタイマー
+    const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5分 (ミリ秒)
 
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('streamerAddressInput').value = '';
@@ -687,7 +730,47 @@
               alert('まず投げ銭ボタンを押して送金リンクを生成してください。');
           }
       });
+
+      // スリープモード検出のためのイベントリスナーを設定
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      document.addEventListener('mousemove', resetInactivityTimer);
+      document.addEventListener('keydown', resetInactivityTimer);
+      document.addEventListener('click', resetInactivityTimer);
+      resetInactivityTimer(); // ページロード時にもタイマーをリセット
     });
+
+    // スリープモード（非アクティブ）検出のための処理
+    function resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(lockMemoSection, INACTIVITY_TIMEOUT);
+    }
+
+    function handleVisibilityChange() {
+        if (document.hidden) {
+            // タブが非アクティブになった場合、すぐにロック
+            lockMemoSection();
+        } else {
+            // タブがアクティブに戻った場合、タイマーをリセット
+            resetInactivityTimer();
+        }
+    }
+
+    function lockMemoSection() {
+        // メモセクションがロックされていない場合のみロック処理を行う
+        if (localStorage.getItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY) === 'true') {
+            localStorage.setItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY, 'false'); // ロック状態に設定
+            document.getElementById('memoInputContainer').classList.remove('show'); // メモ入力欄を隠す
+            document.getElementById('memoInputControls').classList.remove('hidden'); // PIN入力欄を表示
+            document.getElementById('pinInput').value = ''; // PIN入力をクリア
+            document.getElementById('pinInput').focus(); // PIN入力にフォーカス
+            document.getElementById('pinInstruction').textContent = 'メモにアクセスするにはPINコードを再入力してください。';
+            document.getElementById('pinStatus').textContent = '';
+            document.getElementById('verifyPinButton').disabled = true;
+            alert('セキュリティのため、メモ機能がロックされました。PINを再入力してください。');
+            console.log('Memo section locked due to inactivity or visibility change.');
+        }
+    }
+
 
     function toggleTheme() {
       const body = document.body;
@@ -811,7 +894,6 @@
     }
 
     // --- PIN and Memo Functions ---
-    let storedPin = null; // デバイスに保存されているPIN
 
     function initializeMemoSection() {
         const memoUnlocked = localStorage.getItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY) === 'true';
@@ -819,32 +901,29 @@
         const pinInstruction = document.getElementById('pinInstruction');
         const verifyPinButton = document.getElementById('verifyPinButton');
         const memoInputContainer = document.getElementById('memoInputContainer');
-        const pinStatus = document.getElementById('pinStatus');
+        const memoInputControls = document.getElementById('memoInputControls');
 
         storedPin = localStorage.getItem(LOCAL_STORAGE_PIN_KEY);
 
         document.getElementById('memoSection').classList.add('show'); // メモセクションを常に表示
 
         if (memoUnlocked && storedPin) {
-            // PINが認証済みでPINが保存されている場合
-            pinInstruction.textContent = 'PIN認証済みです。メモを編集できます。';
-            pinStatus.textContent = ''; // 以前のPINステータスをクリア
-            pinInput.style.display = 'none';
-            verifyPinButton.style.display = 'none';
-            memoInputContainer.classList.add('show');
+            // PINが認証済みでPINが保存されている場合（リフレッシュ後もメモを表示）
+            pinInstruction.textContent = 'メモにアクセス済みです。';
+            memoInputControls.classList.add('hidden'); // PIN入力関連を隠す
+            memoInputContainer.classList.add('show'); // メモ入力欄を表示
         } else if (storedPin) {
-            // PINは設定済みだが未認証の場合
+            // PINは設定済みだが未認証の場合（リフレッシュ後や非アクティブ後にここにくる）
             pinInstruction.textContent = 'メモにアクセスするにはPINコードを入力してください。';
-            pinInput.style.display = 'block';
-            verifyPinButton.style.display = 'block';
-            memoInputContainer.classList.remove('show');
+            memoInputControls.classList.remove('hidden'); // PIN入力関連を表示
+            memoInputContainer.classList.remove('show'); // メモ入力欄を隠す
         } else {
             // PINがまだ設定されていない場合（初回アクセス）
             pinInstruction.textContent = 'メモにアクセスするためのPINコードを4桁で設定してください。';
-            pinInput.style.display = 'block';
-            verifyPinButton.style.display = 'block';
-            memoInputContainer.classList.remove('show');
+            memoInputControls.classList.remove('hidden'); // PIN入力関連を表示
+            memoInputContainer.classList.remove('show'); // メモ入力欄を隠す
         }
+        pinInput.value = ''; // PIN入力をクリアしておく
         checkPinInput(); // 初期ロード時にもボタンの有効/無効をチェック
     }
 
@@ -875,35 +954,39 @@
         const pinInstruction = document.getElementById('pinInstruction');
         const pinInput = document.getElementById('pinInput');
         const verifyPinButton = document.getElementById('verifyPinButton');
+        const memoInputControls = document.getElementById('memoInputControls');
+
 
         if (!storedPin) {
             // 初回設定時
             localStorage.setItem(LOCAL_STORAGE_PIN_KEY, enteredPin);
             storedPin = enteredPin;
-            localStorage.setItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY, 'true');
+            localStorage.setItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY, 'true'); // 初回設定時は即アンロック
             pinStatus.textContent = '新しいPINコードが設定されました！';
             pinStatus.style.color = 'var(--success-color)';
-            memoInputContainer.classList.add('show');
-            pinInstruction.textContent = 'PIN認証済みです。メモを編集できます。';
-            pinInput.style.display = 'none';
-            verifyPinButton.style.display = 'none';
+            
+            memoInputControls.classList.add('hidden'); // PIN入力関連を隠す
+            memoInputContainer.classList.add('show'); // メモ入力欄を表示
+            pinInput.value = ''; // PIN入力をクリア
             document.getElementById('privateMemo').focus(); // メモ入力欄にフォーカス
+            resetInactivityTimer(); // メモ開いたらタイマーリセット
         } else {
             // 既存PINとの比較
             if (enteredPin === storedPin) {
                 localStorage.setItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY, 'true');
                 pinStatus.textContent = 'PINコードが認証されました！';
                 pinStatus.style.color = 'var(--success-color)';
-                memoInputContainer.classList.add('show');
-                pinInstruction.textContent = 'PIN認証済みです。メモを編集できます。';
-                pinInput.style.display = 'none';
-                verifyPinButton.style.display = 'none';
+                
+                memoInputControls.classList.add('hidden'); // PIN入力関連を隠す
+                memoInputContainer.classList.add('show'); // メモ入力欄を表示
+                pinInput.value = ''; // PIN入力をクリア
                 document.getElementById('privateMemo').focus(); // メモ入力欄にフォーカス
+                resetInactivityTimer(); // メモ開いたらタイマーリセット
             } else {
-                localStorage.setItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY, 'false');
+                localStorage.setItem(LOCAL_STORAGE_MEMO_UNLOCKED_KEY, 'false'); // 認証失敗
                 pinStatus.textContent = 'PINコードが正しくありません。もう一度お試しください。';
                 pinStatus.style.color = 'var(--accent-color-2)';
-                memoInputContainer.classList.remove('show');
+                memoInputContainer.classList.remove('show'); // メモ入力欄を隠す
                 pinInput.value = ''; // PIN入力をリセット
                 verifyPinButton.disabled = true;
             }
