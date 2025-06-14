@@ -349,6 +349,31 @@
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
       transition: border-color 0.5s ease, box-shadow 0.5s ease;
     }
+    
+    .open-xaman-button {
+      background-color: var(--success-color); /* Green for direct action */
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 1.1em;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      margin-top: 15px; /* Space between QR and button */
+    }
+    .open-xaman-button:hover {
+      background-color: #4CAF50; /* Darker green */
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    }
+    body.day-mode .open-xaman-button {
+      background-color: var(--day-success-color);
+    }
+    body.day-mode .open-xaman-button:hover {
+      background-color: #388e3c;
+    }
 
     hr {
       border: none;
@@ -400,6 +425,9 @@
       transition: .4s;
       border-radius: 34px;
       box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+    }
+    body.day-mode .slider {
+      background-color: #ccc;
     }
     .slider:before {
       background-color: #fff;
@@ -601,8 +629,10 @@
       <button onclick="sendTip()" id="tipButton" class="tip-button">XRPを投げ銭してもらう <span style="margin-left: 10px;">✨</span></button>
       <p id="message" class="message"></p>
       <div id="qrCodeArea" class="qr-code-area">
-        <p>XamanアプリでQRコードをスキャンしてください。</p>
+        <p>他のデバイスでスキャンする場合: <br>XamanアプリでQRコードをスキャンしてください。</p>
         <img id="qrImage" class="qr-image" alt="QR Code">
+        <p style="margin-top: 20px;">**同じ携帯で送金する場合:**</p>
+        <button id="openXamanButton" class="open-xaman-button">Xamanアプリで開く <span style="margin-left: 5px;">📱</span></button>
       </div>
     </div>
 
@@ -627,6 +657,8 @@
   </div>
 
   <script>
+    let currentXrpUri = ''; // Global variable to store the generated XRP URI
+
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('streamerAddressInput').value = '';
       // Set initial theme based on local storage or default to night mode
@@ -657,6 +689,15 @@
       // Save memo on input change
       document.getElementById('privateMemo').addEventListener('input', (event) => {
           localStorage.setItem('privateMemoContent', event.target.value);
+      });
+
+      // Event listener for the "Open in Xaman" button
+      document.getElementById('openXamanButton').addEventListener('click', () => {
+          if (currentXrpUri) {
+              window.location.href = currentXrpUri; // Attempt to open the Xaman app via deep link
+          } else {
+              alert('まず投げ銭ボタンを押して送金リンクを生成してください。');
+          }
       });
     });
 
@@ -708,8 +749,8 @@
         return;
       }
 
-      const xrpUri = `https://xrp.to/?to=${encodeURIComponent(address)}&amount=0.1`;
-      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(xrpUri)}`;
+      currentXrpUri = `https://xrp.to/?to=${encodeURIComponent(address)}&amount=0.1`; // Store the URI
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(currentXrpUri)}`;
 
       tipButton.disabled = true;
       messageElement.textContent = '🌌 QRコードを生成中です...';
@@ -723,7 +764,7 @@
         setTimeout(() => {
             qrCodeArea.classList.add('show');
         }, 50); 
-        messageElement.textContent = '✅ 投げ銭準備が完了しました！Xamanアプリでスキャンしてください。';
+        messageElement.textContent = '✅ 投げ銭準備が完了しました！QRコードをスキャンするか、Xamanアプリで開いてください。';
         messageElement.className = 'message success';
         tipButton.disabled = false;
       }, 1000);
@@ -732,7 +773,7 @@
     // ✅ ウォレット接続機能（Xaman対応）
     async function connectWallet() {
       if (!window.xrpl) {
-        alert("Xaman拡張機能がインストールされていません。");
+        alert("Xaman拡張機能がインストールされていません。またはPC版ブラウザでテストネットに接続しようとしています。XamanモバイルアプリからQRコード経由で接続するか、アドレスを手入力してください。");
         return;
       }
       try {
@@ -788,6 +829,10 @@
             pinStatus.style.color = 'var(--accent-color-2)';
             memoInputContainer.classList.remove('show');
             localStorage.setItem('memoUnlocked', 'false');
+            // Reset PIN inputs for security/retry
+            document.getElementById('pinInput1').value = '';
+            document.getElementById('pinInput2').value = '';
+            document.getElementById('verifyPinButton').disabled = true;
         }
     }
   </script>
