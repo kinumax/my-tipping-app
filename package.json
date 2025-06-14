@@ -1,0 +1,15 @@
+{
+  "name": "xrp-tipping-app",
+  "version": "1.0.0",
+  "description": "XRP Tipping application with XUMM integration",
+  "main": "api/create-xumm-payment.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "xumm-sdk": "^1.x.x" // 最新のバージョンを使用してください
+  },
+  "devDependencies": {
+    "vercel": "^34.x.x" // 最新のバージョンを使用してください
+  }
+}
