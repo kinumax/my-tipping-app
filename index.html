@@ -689,6 +689,119 @@
   </div>
 
   <script>
+    // ... 既存のJavaScriptコード ...
+
+    let currentXummPayloadUrl = ''; // XUMMペイロードのQRコードURLを格納
+
+    async function sendTip() {
+        const tipButton = document.getElementById('tipButton');
+        const messageElement = document.getElementById('message');
+        const qrCodeArea = document.getElementById('qrCodeArea');
+        const qrImage = document.getElementById('qrImage');
+        const watchTransferSection = document.getElementById('watchTransferSection');
+        const address = document.getElementById('streamerAddressInput').value.trim();
+        const tipAmount = document.getElementById('tipAmount').value; // 金額もバックエンドに渡す
+
+        if (!isValidXrplAddress(address)) {
+            if (address === '') {
+                connectWallet();
+                return;
+            }
+            alert('正しいXRPLアドレスを入力してください。');
+            return;
+        }
+
+        tipButton.disabled = true;
+        messageElement.textContent = '🌌 XUMM支払いリクエストを生成中です...';
+        messageElement.className = 'message info';
+        qrCodeArea.classList.remove('show');
+        watchTransferSection.classList.remove('show');
+
+        try {
+            // バックエンドAPIを呼び出してXUMMペイロードを作成
+            const response = await fetch('/api/create-xumm-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    destination: address,
+                    amount: tipAmount,
+                    // memo: document.getElementById('privateMemo').value, // メモも送りたい場合は追加
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'XUMM支払いリクエストの生成に失敗しました。');
+            }
+
+            const data = await response.json();
+            currentXummPayloadUrl = data.qrCodeUrl; // XUMMから返されたQRコードURL
+            currentXrpUri = data.xummDeepLink; // XUMMディープリンクも取得 (Xamanアプリで開くに利用)
+
+            if (currentXummPayloadUrl) {
+                qrImage.src = currentXummPayloadUrl;
+
+                qrImage.onload = () => {
+                    qrCodeArea.style.display = 'block';
+                    setTimeout(() => {
+                        qrCodeArea.classList.add('show');
+                    }, 50);
+                    messageElement.textContent = '✅ 投げ銭準備が完了しました！XamanアプリでQRコードをスキャンするか、直接開いてください。';
+                    messageElement.className = 'message success';
+                    tipButton.disabled = false;
+                };
+                qrImage.onerror = () => {
+                    messageElement.textContent = '❌ QRコードの読み込みに失敗しました。';
+                    messageElement.className = 'message error';
+                    tipButton.disabled = false;
+                };
+            } else {
+                throw new Error('QRコードURLが取得できませんでした。');
+            }
+
+        } catch (error) {
+            console.error('支払いリクエストエラー:', error);
+            messageElement.textContent = `❌ エラー: ${error.message}`;
+            messageElement.className = 'message error';
+            tipButton.disabled = false;
+        }
+    }
+
+    // openXamanDeepLink関数も currentXrpUri を使うように調整
+    function openXamanDeepLink(uri) {
+        // ... (この関数は大きく変更する必要はありませんが、currentXrpUri が xumm:// の形式になることを想定します) ...
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+        const isAndroid = /android/i.test(userAgent);
+
+        if (isIOS || isAndroid) {
+            // XUMM APIから返されるURIは既に xumm:// または https://xumm.app/ の形式なので、xrp.to の変換は不要になる可能性が高いです
+            // 必要に応じて `uri.replace('https://xumm.app/', 'xumm://')` のような変換を入れる
+            window.location.href = uri; 
+
+            const timeout = setTimeout(() => {
+                if (isIOS) {
+                    window.location.href = 'https://apps.apple.com/jp/app/xaman-wallet/id1492302343';
+                } else if (isAndroid) {
+                    window.location.href = 'https://play.google.com/store/apps/details?id=com.xrpllabs.xumm';
+                }
+            }, 1000);
+
+            const handleVisibilityChangeForApp = () => {
+                if (!document.hidden) {
+                    clearTimeout(timeout);
+                    document.removeEventListener('visibilitychange', handleVisibilityChangeForApp);
+                }
+            };
+            document.addEventListener('visibilitychange', handleVisibilityChangeForApp);
+
+        } else {
+            window.open(uri, '_blank');
+            alert('PCではXamanアプリは通常インストールされていません。Xummのページが開きますので、そちらで手続きを進めてください。');
+        }
+    }
     let currentXrpUri = ''; // Global variable to store the generated XRP URI
     let currentQrImageUrl = ''; // Global variable to store the generated QR code image URL
     const LOCAL_STORAGE_PIN_KEY = 'memoPinCode'; // PINを保存するキー
