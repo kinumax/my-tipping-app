@@ -78,12 +78,13 @@
       background-color: var(--bg-color);
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      /* align-items: center; */ /* スクロール可能にするため削除または調整 */
+      min-height: 100vh; /* 少なくともビューポートの高さ */
       color: var(--text-color);
-      overflow: hidden; /* Prevent scrollbar from background animation */
+      /* overflow: hidden; */ /* スクロール可能にするため削除 */
       position: relative;
       transition: background-color 0.5s ease;
+      overflow-y: auto; /* 必要に応じて縦スクロールを有効にする */
     }
 
     /* Background animation for a dynamic feel (Night mode only) */
@@ -116,9 +117,10 @@
       width: 100%;
       border: 2px solid var(--border-color);
       position: relative;
-      overflow: hidden;
+      /* overflow: hidden; */ /* スクロール可能にするため削除 */
       animation: fadeIn 1s ease-out;
       transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+      margin: auto; /* コンテンツが短くても中央に配置 */
     }
 
     @keyframes fadeIn {
@@ -640,10 +642,10 @@
 
     <div id="memoSection" class="memo-section">
         <h3><span style="font-size: 1.2em;">📝</span> メモ機能</h3>
-        <p>メモを表示するにはPINコードを入力してください。</p>
+        <p>2つの異なるPINコードを入力してください。</p>
         <div class="pin-input-group">
-            <input type="password" id="pinInput1" placeholder="PINコード" maxlength="4" onkeyup="checkPinInput()">
-            <input type="password" id="pinInput2" placeholder="PINコード再入力" maxlength="4" onkeyup="checkPinInput()">
+            <input type="password" id="pinInput1" placeholder="PINコード (1/2)" maxlength="4" onkeyup="checkPinInput()">
+            <input type="password" id="pinInput2" placeholder="PINコード (2/2)" maxlength="4" onkeyup="checkPinInput()">
         </div>
         <p id="pinStatus" class="pin-status"></p>
         <button onclick="verifyPin()" id="verifyPinButton" class="pin-button" disabled>PINを認証</button>
@@ -671,12 +673,13 @@
       if (memoUnlocked) {
           document.getElementById('memoSection').classList.add('show');
           document.getElementById('memoInputContainer').classList.add('show');
+          // PIN入力欄とボタンを非表示にする
           document.getElementById('pinInput1').style.display = 'none';
           document.getElementById('pinInput2').style.display = 'none';
           document.getElementById('verifyPinButton').style.display = 'none';
           document.getElementById('pinStatus').textContent = 'PIN認証済みです。';
           document.getElementById('pinStatus').style.color = 'var(--success-color)';
-          document.querySelector('#memoSection p').style.display = 'none'; // Hide "Enter PIN" message
+          document.querySelector('#memoSection p').style.display = 'none'; // "Enter PIN" message
       } else {
         document.getElementById('memoSection').classList.add('show'); // Always show PIN section
       }
@@ -795,27 +798,39 @@
     }
 
     // --- PIN and Memo Functions ---
-    const CORRECT_PIN = "1234"; // 例としてPINを設定。実際にはもっと安全な方法で管理してください。
+    // 例として、PIN1とPIN2を結合したものが"CODE1234"になるように設定
+    const CORRECT_COMBINED_PIN = "CODE1234"; 
 
     function checkPinInput() {
         const pin1 = document.getElementById('pinInput1').value;
         const pin2 = document.getElementById('pinInput2').value;
         const verifyButton = document.getElementById('verifyPinButton');
+        const pinStatus = document.getElementById('pinStatus');
 
+        // 両方のPINが4桁入力されたらボタンを有効にする
         if (pin1.length === 4 && pin2.length === 4) {
             verifyButton.disabled = false;
         } else {
             verifyButton.disabled = true;
+        }
+
+        // 入力中のヒント
+        if (pin1.length > 0 || pin2.length > 0) {
+            pinStatus.textContent = '両方のPINコードを入力してください。';
+            pinStatus.style.color = 'var(--text-color)';
+        } else {
+            pinStatus.textContent = '';
         }
     }
 
     function verifyPin() {
         const pin1 = document.getElementById('pinInput1').value;
         const pin2 = document.getElementById('pinInput2').value;
+        const combinedPin = pin1 + pin2; // 2つのPINを結合
         const pinStatus = document.getElementById('pinStatus');
         const memoInputContainer = document.getElementById('memoInputContainer');
 
-        if (pin1 === CORRECT_PIN && pin2 === CORRECT_PIN) {
+        if (combinedPin === CORRECT_COMBINED_PIN) {
             pinStatus.textContent = 'PINコードが認証されました！';
             pinStatus.style.color = 'var(--success-color)';
             memoInputContainer.classList.add('show');
@@ -825,11 +840,11 @@
             document.querySelector('#memoSection p').style.display = 'none'; // Hide "Enter PIN" message
             localStorage.setItem('memoUnlocked', 'true'); // Save unlock status
         } else {
-            pinStatus.textContent = 'PINコードが一致しません。もう一度お試しください。';
+            pinStatus.textContent = 'PINコードが正しくありません。もう一度お試しください。';
             pinStatus.style.color = 'var(--accent-color-2)';
             memoInputContainer.classList.remove('show');
             localStorage.setItem('memoUnlocked', 'false');
-            // Reset PIN inputs for security/retry
+            // PIN入力をリセット
             document.getElementById('pinInput1').value = '';
             document.getElementById('pinInput2').value = '';
             document.getElementById('verifyPinButton').disabled = true;
