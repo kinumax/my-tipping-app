@@ -7,9 +7,9 @@
     "start": "vercel dev"
   },
   "dependencies": {
-    "xumm-sdk": "^1.x.x" // 最新のバージョンを使用してください
+    "xumm-sdk": "^1.x.x" 
   },
   "devDependencies": {
-    "vercel": "^34.x.x" // 最新のバージョンを使用してください
+    "vercel": "^34.x.x" 
   }
 }
