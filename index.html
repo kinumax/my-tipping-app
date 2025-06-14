@@ -1,149 +1,310 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🎸 投げ銭受け取りデモアプリ</title>
+  <title>🌌 XRP 投げ銭アプリ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-color: #1a1a2e; /* Dark Blue */
+      --container-bg: #16213e; /* Slightly lighter dark blue */
+      --text-color: #e0e0e0; /* Light Gray */
+      --accent-color-1: #0f3460; /* Darker accent */
+      --accent-color-2: #e94560; /* Reddish pink (for highlights/errors) */
+      --primary-button-bg: #4a90e2; /* Blue */
+      --primary-button-hover: #357bd8; /* Darker Blue */
+      --success-color: #5cb85c; /* Green */
+      --info-color: #3f72af; /* Muted blue */
+      --border-color: #0c183d; /* Very dark border */
+      --input-bg: #283a5e; /* Darker blue for input */
+      --qr-border: #8d9bb5; /* Light muted blue */
+    }
+
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: 'Orbitron', sans-serif; /* Futuristic font */
       margin: 0;
       padding: 20px;
-      background-color: #f4f7f6;
+      background-color: var(--bg-color);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      color: #333;
+      color: var(--text-color);
+      overflow: hidden; /* Prevent scrollbar from background animation */
+      position: relative;
     }
-    .container {
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      max-width: 500px;
+
+    /* Background animation for a dynamic feel */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #0c183d, #1a1a2e, #0c183d);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      z-index: -1;
     }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      background-color: var(--container-bg);
+      padding: 35px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      max-width: 550px;
+      width: 100%;
+      border: 2px solid var(--border-color);
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     h1 {
-      color: #2c3e50;
-      margin-bottom: 25px;
-      font-size: 2.2em;
+      color: var(--primary-button-bg);
+      margin-bottom: 30px;
+      font-size: 2.5em;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 15px;
+      text-shadow: 0 0 10px rgba(74, 144, 226, 0.5); /* Glowing effect */
     }
+
+    h2 {
+      color: var(--text-color);
+      margin-top: 30px;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    }
+
+    p {
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
     .xrpl-address {
-      font-family: 'Courier New', monospace;
-      background-color: #dcedc8;
-      padding: 5px 10px;
-      border-radius: 5px;
-      font-size: 0.95em;
-      color: #2e7d32;
-      word-break: break-word;
-      border: 1px solid #c8e6c9;
-      width: 100%;
+      font-family: 'Share Tech Mono', monospace; /* Monospace for address */
+      background-color: var(--input-bg);
+      padding: 12px 15px;
+      border-radius: 8px;
+      font-size: 1em;
+      color: var(--text-color);
+      word-break: break-all;
+      border: 1px solid var(--border-color);
+      width: calc(100% - 30px); /* Adjust for padding */
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
     }
+
+    .xrpl-address:focus {
+      outline: none;
+      border-color: var(--primary-button-bg);
+      box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
+    }
+
     .address-display {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-top: 15px;
+      gap: 12px;
+      margin-top: 20px;
     }
+
     .copy-button, .connect-button {
-      background-color: #4CAF50;
+      background-color: var(--primary-button-bg);
       color: white;
       border: none;
-      padding: 8px 15px;
-      border-radius: 5px;
+      padding: 10px 20px;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 1em;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
+
+    .copy-button:hover, .connect-button:hover {
+      background-color: var(--primary-button-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    }
+
     .copy-status {
-      color: #4CAF50;
+      color: var(--success-color);
       font-weight: bold;
-      margin-top: 10px;
+      margin-top: 15px;
+      font-size: 0.9em;
+      animation: fadeOut 2s forwards; /* Animation for status message */
     }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
     .input-group {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 20px;
-      gap: 10px;
+      margin-bottom: 25px;
+      gap: 15px;
     }
+
     .input-group input[type="number"] {
-      padding: 10px 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 1.1em;
-      width: 120px;
-      text-align: right;
-    }
-    .tip-button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 12px 25px;
+      padding: 12px 15px;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
       font-size: 1.2em;
-      cursor: pointer;
+      width: 150px;
+      text-align: right;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      font-family: 'Share Tech Mono', monospace;
+      transition: all 0.3s ease;
     }
-    .message {
-      margin-top: 20px;
-      padding: 10px 15px;
-      border-radius: 8px;
+
+    .input-group input[type="number"]:focus {
+      outline: none;
+      border-color: var(--primary-button-bg);
+      box-shadow: 0 0 8px rgba(74, 144, 226, 0.6);
+    }
+
+    .input-group span {
+      font-size: 1.2em;
       font-weight: bold;
+      color: var(--primary-button-bg);
+      text-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
     }
-    .message.info {
-      background-color: #e0f7fa;
-      color: #007bff;
-    }
-    .message.success {
-      background-color: #e8f5e9;
-      color: #28a745;
-    }
-    .qr-code-area {
-      margin-top: 25px;
-      padding: 15px;
-      background-color: #f8f9fa;
+
+    .tip-button {
+      background-color: var(--accent-color-2); /* Reddish pink for action */
+      color: white;
+      border: none;
+      padding: 15px 30px;
       border-radius: 10px;
-      border: 1px dashed #ced4da;
+      font-size: 1.4em;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+      letter-spacing: 1px;
     }
+
+    .tip-button:hover {
+      background-color: #d63d58; /* Darker pink */
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .tip-button:disabled {
+      background-color: #666;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .message {
+      margin-top: 25px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1.1em;
+      transition: all 0.5s ease;
+    }
+
+    .message.info {
+      background-color: rgba(63, 114, 175, 0.2);
+      color: var(--info-color);
+      border: 1px solid var(--info-color);
+    }
+
+    .message.success {
+      background-color: rgba(92, 184, 92, 0.2);
+      color: var(--success-color);
+      border: 1px solid var(--success-color);
+    }
+
+    .qr-code-area {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: var(--accent-color-1);
+      border-radius: 12px;
+      border: 2px dashed var(--qr-border);
+      display: none; /* Initially hidden */
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .qr-code-area.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
     .qr-image {
-      width: 180px;
-      height: 180px;
-      margin: 15px auto;
+      width: 200px;
+      height: 200px;
+      margin: 20px auto;
       display: block;
-      border: 5px solid white;
+      border: 8px solid white; /* Stronger white border for contrast */
+      border-radius: 5px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+
+    hr {
+      border: none;
+      border-top: 1px dashed var(--border-color);
+      margin: 35px 0;
+    }
+
+    /* Small glowing effect on elements on hover */
+    .container button:not(.tip-button):hover,
+    .container input:not([type="number"]):hover {
+      box-shadow: 0 0 15px rgba(74, 144, 226, 0.8);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🎸 投げ銭受け取りデモアプリ</h1>
+    <h1><span style="font-size: 1.5em; animation: pulse 2s infinite;">💸</span> XRPを受け取る</h1>
 
     <div class="streamer-info">
-      <p>あなたのXRPLテストネットアドレスを入力してください：</p>
+      <p>あなたのXRPLテストネットアドレスを入力するか、ウォレットを接続してください：</p>
       <div class="address-display">
         <input type="text" id="streamerAddressInput" class="xrpl-address" placeholder="例: r...abc123" />
-        <button onclick="connectWallet()" class="connect-button">ウォレットに接続</button>
-        <button onclick="copyAddress()" class="copy-button">アドレスをコピー</button>
+        <button onclick="connectWallet()" class="connect-button">ウォレットに接続 <span style="margin-left: 5px;">🚀</span></button>
+        <button onclick="copyAddress()" class="copy-button">アドレスをコピー <span style="margin-left: 5px;">📋</span></button>
       </div>
-      <p id="copyStatus" class="copy-status" style="display: none;">コピーしました！</p>
+      <p id="copyStatus" class="copy-status" style="display: none;">✨ アドレスをコピーしました！</p>
     </div>
 
     <hr>
 
     <div class="viewer-section">
-      <h2>💰 XRPで投げ銭をもらう</h2>
+      <h2><span style="font-size: 1.2em; animation: rotate 3s infinite linear;">💰</span> XRPを投げ銭してもらう</h2>
       <p>（このデモでは0.1XRP固定です）</p>
       <div class="input-group">
         <input type="number" id="tipAmount" value="0.1" disabled> <span>XRP</span>
       </div>
-      <button onclick="sendTip()" id="tipButton" class="tip-button">XRPを投げ銭してもらう</button>
+      <button onclick="sendTip()" id="tipButton" class="tip-button">XRPを投げ銭してもらう <span style="margin-left: 10px;">✨</span></button>
       <p id="message" class="message"></p>
-      <div id="qrCodeArea" class="qr-code-area" style="display: none;">
+      <div id="qrCodeArea" class="qr-code-area">
         <p>XamanアプリでQRコードをスキャンしてください。</p>
         <img id="qrImage" class="qr-image" alt="QR Code">
       </div>
@@ -165,6 +326,7 @@
         await navigator.clipboard.writeText(address);
         const copyStatus = document.getElementById('copyStatus');
         copyStatus.style.display = 'block';
+        // Hide the status message after 2 seconds
         setTimeout(() => {
           copyStatus.style.display = 'none';
         }, 2000);
@@ -194,16 +356,22 @@
       const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(xrpUri)}`;
 
       tipButton.disabled = true;
-      messageElement.textContent = 'QRコードを生成中です...';
+      messageElement.textContent = '🌌 QRコードを生成中です...';
       messageElement.className = 'message info';
-      qrCodeArea.style.display = 'block';
+      qrCodeArea.classList.remove('show'); // Hide QR code area before showing
+      
       qrImage.src = qrUrl;
-
+      
+      // Add a small delay for the QR code to load then show with animation
       setTimeout(() => {
-        messageElement.textContent = '投げ銭準備が完了しました！Xamanアプリでスキャンしてください。';
+        qrCodeArea.style.display = 'block';
+        setTimeout(() => { // Trigger animation after display block
+            qrCodeArea.classList.add('show');
+        }, 50); 
+        messageElement.textContent = '✅ 投げ銭準備が完了しました！Xamanアプリでスキャンしてください。';
         messageElement.className = 'message success';
         tipButton.disabled = false;
-      }, 2000);
+      }, 1000); // Give some time for the "generating" message to display
     }
 
     // ✅ ウォレット接続機能（Xaman対応）
@@ -220,12 +388,13 @@
         const address = result.account_data?.Account;
         if (address) {
           document.getElementById("streamerAddressInput").value = address;
+          alert("ウォレットに接続しました！");
         } else {
           alert("アカウント情報の取得に失敗しました。");
         }
       } catch (error) {
         console.error("ウォレット接続エラー:", error);
-        alert("ウォレット接続に失敗しました。");
+        alert("ウォレット接続に失敗しました。Xaman拡張機能が正しく動作しているか確認してください。");
       }
     }
   </script>
